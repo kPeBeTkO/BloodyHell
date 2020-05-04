@@ -1,7 +1,7 @@
 ﻿3
-N wall none.jpg
-S wall stone.jpg
-G empty grass.jpg
+N Wall none.jpg
+S Wall stone.jpg
+G Empty grass.jpg
 10 10
 NNNNNNNNNN
 NSSSSSSSSN

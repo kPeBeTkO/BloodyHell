@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.IO;
+using RayCasting;
 
 namespace BloodyHell
 {
@@ -32,11 +33,32 @@ namespace BloodyHell
         public int Width { get; private set; }
         public int Heigth { get; private set; }
         public MapChunk[,] Chunks;
+        public List<Wall> Walls;
         public Map(){ }
 
         public Map(string fileName)
         {
             ReadFromFile(fileName);
+            CreateWallsList();
+        }
+
+        public void CreateWallsList()
+        {
+            Walls = new List<Wall>();
+            var defaultWalls = new List<Wall>();
+            defaultWalls.Add(new Wall(0, 0, 0, ChunkSize));
+            defaultWalls.Add(new Wall(0, ChunkSize, ChunkSize, ChunkSize));
+            defaultWalls.Add(new Wall(ChunkSize, ChunkSize, ChunkSize, 0));
+            defaultWalls.Add(new Wall(0, 0, ChunkSize, 0));
+            for (var i = 0; i < Heigth; i++)
+                for (var j = 0; j < Width; j++)
+                {
+                    if (Chunks[j,i].Type == ChunkType.Wall)
+                    {
+                        foreach (var wall in defaultWalls)
+                            Walls.Add(new Wall(wall, new Vector(j * ChunkSize, i * ChunkSize)));
+                    }
+                }
         }
 
         public void ReadFromFile(string fileName)

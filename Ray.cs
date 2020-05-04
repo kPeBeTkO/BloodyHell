@@ -32,6 +32,11 @@ namespace RayCasting
                 return new Vector(x1 + t * (x2 - x1), y1 + t * (y2 - y1));
             return null;
         }
+
+        public void Rotate(double angle)
+        {
+            Direction = Direction.Rotate(angle);
+        }
     }
 
     public class Wall
