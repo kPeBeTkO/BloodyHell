@@ -36,8 +36,19 @@ namespace RayCasting
         public Vector GetIntersectionPoint(Vector corner, int size)
         {
             var center = corner + new Vector(size, size) / 2;
-            var angle = (center - Location).Angle + Math.PI;
+            var sector = Math.Floor(((center - Location).Angle + Math.PI / 4) / (Math.PI / 2));
+            switch(sector)
+            {
+                case 0:
+                    return GetIntersectionPoint(new Wall(corner + new Vector(size, 0), corner + new Vector(size, size)));
+                case 1:
+                    return GetIntersectionPoint(new Wall(corner , corner + new Vector(size, 0)));
+                case -1:
+                    return GetIntersectionPoint(new Wall(corner + new Vector(0, size), corner + new Vector(size, size)));
+                default:
+                    return GetIntersectionPoint(new Wall(corner , corner + new Vector(0, size)));
 
+            }
             return null;
 
         }
@@ -57,10 +68,10 @@ namespace RayCasting
             Start = new Vector(x1, y1);
             End = new Vector(x2, y2);
         }
-        public Wall(Point a, Point b)
+        public Wall(Vector a, Vector b)
         {
-            Start = new Vector(a);
-            End = new Vector(b);
+            Start = a;
+            End = b;
         }
         public Wall(Wall wall, Vector offset)
         {

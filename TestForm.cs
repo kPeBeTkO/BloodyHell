@@ -13,6 +13,7 @@ namespace BloodyHell
     {
         public TestForm()
         {
+            BackColor = Color.Black;
             Width = 600;
             Height = 600;
             DoubleBuffered = true;
