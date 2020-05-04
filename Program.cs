@@ -13,7 +13,7 @@ namespace BloodyHell
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run();
+            Application.Run(new TestForm());
         }
     }
 }
