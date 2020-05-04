@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using NUnit.Framework;
+using System.Collections;
 
 namespace RayCasting
 {
@@ -17,12 +19,12 @@ namespace RayCasting
             Direction = new Vector(1, 0).Rotate(angle);
             
         }
-        public Vector GetIntersectionPoint(Wall wall)
+        public Vector GetIntersectionPoint(Line line)
         {
             var x1 = Location.X; var y1 = Location.Y;
             var x2 = (Location + Direction).X; var y2 = (Location + Direction).Y;
-            var x3 = wall.Start.X; var y3 = wall.Start.Y;
-            var x4 = wall.End.X; var y4 = wall.End.Y;
+            var x3 = line.Start.X; var y3 = line.Start.Y;
+            var x4 = line.End.X; var y4 = line.End.Y;
             var den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
             if (den == 0)
                 return null;
@@ -33,24 +35,36 @@ namespace RayCasting
             return null;
         }
 
-        public Vector GetIntersectionPoint(Vector corner, int size)
+        /*public Vector GetIntersectionPoint(Square square)
         {
+            var corner = square.Location;
+            var size = square.Size;
             var center = corner + new Vector(size, size) / 2;
-            var sector = Math.Floor(((center - Location).Angle + Math.PI / 4) / (Math.PI / 2));
+            var sector = Math.Floor(((Location - center).Angle + Math.PI / 4) / (Math.PI / 2));
             switch(sector)
             {
                 case 0:
-                    return GetIntersectionPoint(new Wall(corner + new Vector(size, 0), corner + new Vector(size, size)));
-                case 1:
-                    return GetIntersectionPoint(new Wall(corner , corner + new Vector(size, 0)));
+                    return GetIntersectionPoint(new Line(corner + new Vector(size, 0), corner + new Vector(size, size)));
                 case -1:
-                    return GetIntersectionPoint(new Wall(corner + new Vector(0, size), corner + new Vector(size, size)));
+                    return GetIntersectionPoint(new Line(corner , corner + new Vector(size, 0)));
+                case 1:
+                    return GetIntersectionPoint(new Line(corner + new Vector(0, size), corner + new Vector(size, size)));
                 default:
-                    return GetIntersectionPoint(new Wall(corner , corner + new Vector(0, size)));
+                    return GetIntersectionPoint(new Line(corner , corner + new Vector(0, size)));
 
             }
-            return null;
+        }*/
 
+        public Vector GetIntersectionPoint(Square square)
+        {
+            Vector min = null;
+            foreach(var line in square)
+            {
+                var v = GetIntersectionPoint(line);
+                if (min == null || (v != null && (min - Location).Length > (v - Location).Length))
+                    min = v;
+            }
+            return min;
         }
 
         public void Rotate(double angle)
@@ -59,21 +73,45 @@ namespace RayCasting
         }
     }
 
-    public class Wall
+    public class Square : IEnumerable<Line>
+    {
+        public Vector Location;
+        public int Size;
+        public Square(Vector location, int size)
+        {
+            Location = location;
+            Size = size;
+        }
+
+        public IEnumerator<Line> GetEnumerator()
+        {
+            yield return new Line(Location + new Vector(Size, 0), Location + new Vector(Size, Size));
+            yield return new Line(Location, Location + new Vector(Size, 0));
+            yield return new Line(Location + new Vector(0, Size), Location + new Vector(Size, Size));
+            yield return new Line(Location, Location + new Vector(0, Size));
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+    }
+
+    public class Line
     {
         public Vector Start;
         public Vector End;
-        public Wall(int x1, int y1, int x2, int y2)
+        public Line(int x1, int y1, int x2, int y2)
         {
             Start = new Vector(x1, y1);
             End = new Vector(x2, y2);
         }
-        public Wall(Vector a, Vector b)
+        public Line(Vector a, Vector b)
         {
             Start = a;
             End = b;
         }
-        public Wall(Wall wall, Vector offset)
+        public Line(Line wall, Vector offset)
         {
             Start = wall.Start + offset;
             End = wall.End + offset;
@@ -82,6 +120,22 @@ namespace RayCasting
         public double GetWallPart(Vector p)
         {
             return (p - Start).Length / (End - Start).Length;
+        }
+    }
+    
+    [TestFixture]
+    public class RayCastTests
+    {
+        [TestCase(15, 5, Math.PI, 0, 0, 10, 10, 5)]
+        [TestCase(5, 15, -Math.PI / 2, 0, 0, 10, 5, 10)]
+        [TestCase(-5, 5, 0, 0, 0, 10, 0, 5)]
+        public static void TestSquareRayCollision(int rayX, int rayY, double alpha,
+                                                  int sqrX, int sqrY, int sqrSize,
+                                                  float expX, float expY)
+        {
+            var ray = new Ray(new Vector(rayX, rayY), alpha);
+            var square = new Square(new Vector(sqrX, sqrY), sqrSize);
+            Assert.AreEqual(new Vector(expX, expY), ray.GetIntersectionPoint(square));
         }
     }
 }

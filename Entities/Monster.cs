@@ -8,5 +8,9 @@ namespace BloodyHell.Entities
 {
     class Monster : IEntity
     {
+        public void MakeTurn()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

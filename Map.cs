@@ -27,24 +27,26 @@ namespace BloodyHell
         }
     }
 
+    
+
     public class Map
     {
         public int ChunkSize = 32;
         public int Width { get; private set; }
         public int Heigth { get; private set; }
         public MapChunk[,] Chunks;
-        public List<Wall> Walls;
+        public List<Square> Walls;
         public Map(){ }
 
         public Map(string fileName)
         {
             ReadFromFile(fileName);
-            CreateWallsList();
+            //CreateWallsList();
         }
 
-        public void CreateWallsList()
+        /*public void CreateWallsList()
         {
-            Walls = new List<Wall>();
+            Walls = new List<WallChank>();
             var defaultWalls = new List<Wall>();
             defaultWalls.Add(new Wall(0, 0, 0, ChunkSize));
             defaultWalls.Add(new Wall(0, ChunkSize, ChunkSize, ChunkSize));
@@ -59,10 +61,11 @@ namespace BloodyHell
                             Walls.Add(new Wall(wall, new Vector(j * ChunkSize, i * ChunkSize)));
                     }
                 }
-        }
+        }*/
 
         public void ReadFromFile(string fileName)
         {
+            Walls = new List<Square>();
             var path = "Textures\\" + fileName + '\\';
             var file = new StreamReader(path + fileName + ".txt");
             var textureCount = int.Parse(file.ReadLine());
@@ -83,7 +86,11 @@ namespace BloodyHell
             {
                 var line = file.ReadLine();
                 for (var j = 0; j < Width; j++)
+                {
                     Chunks[j, i] = textureDictionary[line[j]];
+                    if (Chunks[j, i].Type == ChunkType.Wall)
+                        Walls.Add(new Square(new Vector(j * ChunkSize, i * ChunkSize), ChunkSize));
+                }
             }
         }
 

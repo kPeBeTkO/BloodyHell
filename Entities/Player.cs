@@ -8,6 +8,9 @@ namespace BloodyHell.Entities
 {
     class Player : IEntity
     {
-
+        public void MakeTurn()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

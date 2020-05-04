@@ -91,5 +91,10 @@ namespace RayCasting
 		{
 			return new Vector(Math.Max(0, Math.Min(size.Width, X)), Math.Max(0, Math.Min(size.Height, Y)));
 		}
+
+		public PointF ToPoint()
+		{
+			return new PointF(X, Y);
+		}
 	}
 }

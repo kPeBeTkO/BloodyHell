@@ -19,7 +19,7 @@ namespace BloodyHell
             DoubleBuffered = true;
             var map = new Map("TestLevel");
             var mapImage = map.GetMapImage();
-            var camera = new Vector(0, 0);
+            var camera = new Vector(150, 150);
             var timer = new Timer() { Interval = 40 };
             timer.Tick += (sender, args) => Invalidate();
             timer.Start();
@@ -28,28 +28,41 @@ namespace BloodyHell
             Invalidate();
         }
 
-        private Vector FirstIntersectionOfRay(Ray ray, List<Wall> walls)
+        private Tuple<Vector,Square> FirstIntersectionOfRay(Ray ray, List<Square> walls)
         {
             if (walls.Count == 0)
                 return null;
-            var closestPoint = ray.GetIntersectionPoint(walls[0]);
+            Vector closestPoint = null;
+            Square closestWall = null;
             foreach(var wall in walls)
             {
                 var point = ray.GetIntersectionPoint(wall);
-                if (closestPoint == null || (point != null && (point - ray.Location).Length < (closestPoint - ray.Location).Length))
+                if (closestPoint == null ||
+                    (point != null && (point - ray.Location).Length < (closestPoint - ray.Location).Length))
+                {
                     closestPoint = point;
+                    closestWall = wall;
+                }
             }
-            return closestPoint;
+            return Tuple.Create(closestPoint, closestWall);
         }
 
-        private void DrawRayCast(Graphics graphics, Bitmap background, Vector camera, List<Wall> walls, int rayCount)
+        private void DrawRayCast(Graphics graphics, Bitmap background, Vector camera, List<Square> walls, int rayCount)
         {
             var ray = new Ray(camera, 0);
-            var pen = new Pen(new TextureBrush(background));
+            var brush = new TextureBrush(background);
+            var pen = new Pen(brush);
+            var HittedWalls = new HashSet<Square>();
             for (var i = 0; i < rayCount; i++)
             {
-                graphics.DrawLine(pen, camera, FirstIntersectionOfRay(ray, walls));
+                var a = FirstIntersectionOfRay(ray, walls);
+                HittedWalls.Add(a.Item2);
+                graphics.DrawLine(pen, camera, a.Item1);
                 ray.Rotate(Math.PI * 2 / rayCount);
+            }
+            foreach (var square in HittedWalls)
+            {
+                graphics.FillRectangle(brush, square);
             }
         }
     }
