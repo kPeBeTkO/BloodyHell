@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace BloodyHell
 {
-    interface IEntity
+    public interface IEntity
     {
+        void MakeTurn();
+        void 
     }
 }
