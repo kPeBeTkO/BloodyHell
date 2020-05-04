@@ -9,18 +9,18 @@ namespace RayCasting
 {
     public class Ray
     {
-        public Vector Position;
+        public Vector Location;
         public Vector Direction;
         public Ray(Vector pos, double angle)
         {
-            Position = pos;
+            Location = pos;
             Direction = new Vector(1, 0).Rotate(angle);
             
         }
         public Vector GetIntersectionPoint(Wall wall)
         {
-            var x1 = Position.X; var y1 = Position.Y;
-            var x2 = (Position + Direction).X; var y2 = (Position + Direction).Y;
+            var x1 = Location.X; var y1 = Location.Y;
+            var x2 = (Location + Direction).X; var y2 = (Location + Direction).Y;
             var x3 = wall.Start.X; var y3 = wall.Start.Y;
             var x4 = wall.End.X; var y4 = wall.End.Y;
             var den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
@@ -31,6 +31,15 @@ namespace RayCasting
             if (u >= 0 && u <= 1 && t >= 0)
                 return new Vector(x1 + t * (x2 - x1), y1 + t * (y2 - y1));
             return null;
+        }
+
+        public Vector GetIntersectionPoint(Vector corner, int size)
+        {
+            var center = corner + new Vector(size, size) / 2;
+            var angle = (center - Location).Angle + Math.PI;
+
+            return null;
+
         }
 
         public void Rotate(double angle)

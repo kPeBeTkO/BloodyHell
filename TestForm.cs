@@ -35,7 +35,7 @@ namespace BloodyHell
             foreach(var wall in walls)
             {
                 var point = ray.GetIntersectionPoint(wall);
-                if (closestPoint == null || (point != null && (point - ray.Position).Length < (closestPoint - ray.Position).Length))
+                if (closestPoint == null || (point != null && (point - ray.Location).Length < (closestPoint - ray.Location).Length))
                     closestPoint = point;
             }
             return closestPoint;
