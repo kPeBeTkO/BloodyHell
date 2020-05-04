@@ -77,6 +77,7 @@ namespace RayCasting
     {
         public Vector Location;
         public int Size;
+        public Vector Center { get { return Location + new Vector(Size, Size) / 2; } }
         public Square(Vector location, int size)
         {
             Location = location;

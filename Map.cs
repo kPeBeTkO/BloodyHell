@@ -48,7 +48,7 @@ namespace BloodyHell
             for (var i = 0; i < Heigth; i++)
                 for (var j = 0; j < Width; j++)
                 {
-                    if (random.Next(0, 3) == 0)
+                    if (random.Next(0, 5) == 0)
                     {
                         Chunks[j, i] = wall;
                         Walls.Add(new Square(new Vector(j * ChunkSize, i * ChunkSize), ChunkSize));

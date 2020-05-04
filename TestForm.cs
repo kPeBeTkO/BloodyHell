@@ -36,7 +36,7 @@ namespace BloodyHell
             Square closestWall = null;
             foreach(var wall in walls)
             {
-                if ((wall.Location - ray.Location).Length > 320)
+                if ((wall.Center - ray.Location).Length > 320)
                     continue;
                 var point = ray.GetIntersectionPoint(wall);
                 if (closestPoint == null ||
