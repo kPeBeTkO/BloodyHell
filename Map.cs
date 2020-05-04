@@ -36,32 +36,33 @@ namespace BloodyHell
         public int Heigth { get; private set; }
         public MapChunk[,] Chunks;
         public List<Square> Walls;
-        public Map(){ }
+        public Map(int width, int heigth)
+        {
+            Width = width;
+            Heigth = heigth;
+            Chunks = new MapChunk[width, heigth];
+            Walls = new List<Square>();
+            var wall = new MapChunk(ChunkType.Wall, new Bitmap("Textures\\TestLevel\\stone.jpg"));
+            var empty = new MapChunk(ChunkType.Wall, new Bitmap("Textures\\TestLevel\\grass.jpg"));
+            var random = new Random();
+            for (var i = 0; i < Heigth; i++)
+                for (var j = 0; j < Width; j++)
+                {
+                    if (random.Next(0, 3) == 0)
+                    {
+                        Chunks[j, i] = wall;
+                        Walls.Add(new Square(new Vector(j * ChunkSize, i * ChunkSize), ChunkSize));
+                    }
+                    else
+                        Chunks[j, i] = empty;
+                }
+
+        }
 
         public Map(string fileName)
         {
             ReadFromFile(fileName);
-            //CreateWallsList();
         }
-
-        /*public void CreateWallsList()
-        {
-            Walls = new List<WallChank>();
-            var defaultWalls = new List<Wall>();
-            defaultWalls.Add(new Wall(0, 0, 0, ChunkSize));
-            defaultWalls.Add(new Wall(0, ChunkSize, ChunkSize, ChunkSize));
-            defaultWalls.Add(new Wall(ChunkSize, ChunkSize, ChunkSize, 0));
-            defaultWalls.Add(new Wall(0, 0, ChunkSize, 0));
-            for (var i = 0; i < Heigth; i++)
-                for (var j = 0; j < Width; j++)
-                {
-                    if (Chunks[j,i].Type == ChunkType.Wall)
-                    {
-                        foreach (var wall in defaultWalls)
-                            Walls.Add(new Wall(wall, new Vector(j * ChunkSize, i * ChunkSize)));
-                    }
-                }
-        }*/
 
         public void ReadFromFile(string fileName)
         {

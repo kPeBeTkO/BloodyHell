@@ -17,14 +17,14 @@ namespace BloodyHell
             Width = 600;
             Height = 600;
             DoubleBuffered = true;
-            var map = new Map("TestLevel");
+            var map = new Map(60, 30);
             var mapImage = map.GetMapImage();
             var camera = new Vector(150, 150);
-            var timer = new Timer() { Interval = 40 };
+            var timer = new Timer() { Interval = 20 };
             timer.Tick += (sender, args) => Invalidate();
             timer.Start();
             MouseMove += (sender, args) => camera = new Vector(args.Location);
-            Paint += (sender, args) => DrawRayCast(args.Graphics, mapImage, camera, map.Walls, 1000);
+            Paint += (sender, args) => DrawRayCast(args.Graphics, mapImage, camera, map.Walls, 500);
             Invalidate();
         }
 
@@ -36,6 +36,8 @@ namespace BloodyHell
             Square closestWall = null;
             foreach(var wall in walls)
             {
+                if ((wall.Location - ray.Location).Length > 320)
+                    continue;
                 var point = ray.GetIntersectionPoint(wall);
                 if (closestPoint == null ||
                     (point != null && (point - ray.Location).Length < (closestPoint - ray.Location).Length))
@@ -57,7 +59,10 @@ namespace BloodyHell
             {
                 var a = FirstIntersectionOfRay(ray, walls);
                 HittedWalls.Add(a.Item2);
-                graphics.DrawLine(pen, camera, a.Item1);
+                if (a.Item1 != null)
+                    graphics.DrawLine(pen, camera, a.Item1);
+                else
+                    graphics.DrawLine(pen, camera, camera + ray.Direction * 320);
                 ray.Rotate(Math.PI * 2 / rayCount);
             }
             foreach (var square in HittedWalls)
