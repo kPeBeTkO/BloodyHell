@@ -27,8 +27,6 @@ namespace BloodyHell
         }
     }
 
-    
-
     public class Map
     {
         public int ChunkSize = 32;
@@ -71,6 +69,7 @@ namespace BloodyHell
             var file = new StreamReader(path + fileName + ".txt");
             var textureCount = int.Parse(file.ReadLine());
             var textureDictionary = new Dictionary<char, MapChunk>();
+
             for (var i = 0; i < textureCount; i++)
             {
                 var textureInfo = file.ReadLine().Split();
@@ -79,10 +78,12 @@ namespace BloodyHell
                     throw new Exception();
                 textureDictionary[textureInfo[0][0]] = new MapChunk(type, new Bitmap(path + textureInfo[2]));
             }
+
             var size = file.ReadLine().Split().Select(x => int.Parse(x)).ToArray();
             Width = size[0];
             Heigth = size[1];
             Chunks = new MapChunk[Width, Heigth];
+
             for (var i = 0; i < Heigth; i++)
             {
                 var line = file.ReadLine();

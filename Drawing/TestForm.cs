@@ -35,6 +35,7 @@ namespace BloodyHell
             [Keys.A] = new Vector(1, 0),
             [Keys.D] = new Vector(-1, 0),
         };
+
         public TestForm()
         {
             BackColor = Color.Black;
@@ -48,6 +49,7 @@ namespace BloodyHell
             watch.Start();
             var timer = new Timer() { Interval = 10 };
             var level = new Level(map, new Player(mouse));
+
             timer.Tick += (sender, args) =>
             {
                 level.Player.SetVelosity(userInput, mouse);
@@ -58,18 +60,22 @@ namespace BloodyHell
                 Invalidate();
             };
             timer.Start();
+
             KeyUp += (sender, args) =>
             {
                 if (directions.ContainsKey(args.KeyCode))
                     keysPressed.Remove(args.KeyCode);
             };
+
             PreviewKeyDown += (sender, args) =>
             {
                 if (directions.ContainsKey(args.KeyCode))
                     keysPressed.Add(args.KeyCode);
             };
+
             MouseMove += (sender, args) => mouse = new Vector(args.Location) / map.ChunkSize;
             Paint += (sender, args) => DrawRayCast(args.Graphics,  level, 500);
+
             Paint += (sender, args) =>
             {
                 args.Graphics.DrawString((1000.0 / frameTime).ToString(), new Font("arial", 10), Brushes.Red, 0, 0);

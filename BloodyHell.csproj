@@ -55,23 +55,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DrawingExtentions.cs" />
-    <Compile Include="Entities\Monster.cs" />
-    <Compile Include="Entities\Player.cs" />
-    <Compile Include="GameForm.cs">
+    <Compile Include="Drawing\DrawingExtentions.cs" />
+    <Compile Include="businessLogic\Monster.cs" />
+    <Compile Include="businessLogic\Player.cs" />
+    <Compile Include="Drawing\GameForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GameModel.cs" />
-    <Compile Include="IEntity.cs" />
-    <Compile Include="Level.cs" />
-    <Compile Include="TestForm.cs">
+    <Compile Include="businessLogic\GameModel.cs" />
+    <Compile Include="businessLogic\IEntity.cs" />
+    <Compile Include="businessLogic\Level.cs" />
+    <Compile Include="Drawing\TestForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Map.cs" />
+    <Compile Include="serviceClasses\Map.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Ray.cs" />
-    <Compile Include="Vector.cs" />
+    <Compile Include="serviceClasses\Ray.cs" />
+    <Compile Include="serviceClasses\Vector.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -109,6 +109,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
