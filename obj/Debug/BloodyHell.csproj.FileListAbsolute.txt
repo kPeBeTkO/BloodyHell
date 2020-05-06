@@ -18,3 +18,5 @@ C:\Users\udovi\source\repos\BloodyHell\BloodyHell\bin\Debug\nunit.framework.dll
 C:\Users\udovi\source\repos\BloodyHell\BloodyHell\bin\Debug\nunit.framework.pdb
 C:\Users\udovi\source\repos\BloodyHell\BloodyHell\bin\Debug\nunit.framework.xml
 C:\Users\udovi\source\repos\BloodyHell\BloodyHell\obj\Debug\BloodyHell.csproj.CopyComplete
+C:\as\BloodyHell\obj\Debug\BloodyHell.exe
+C:\as\BloodyHell\obj\Debug\BloodyHell.pdb
