@@ -6,25 +6,36 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
 using RayCasting;
+using System.Diagnostics;
 
 namespace BloodyHell
 {
     public class TestForm : Form
     {
+        private long lastFrame;
         public TestForm()
         {
             BackColor = Color.Black;
             Width = 600;
             Height = 600;
             DoubleBuffered = true;
-            var map = new Map(60, 30);
+            var map = new Map("TestLevel");
             var mapImage = map.GetMapImage();
             var camera = new Vector(150, 150);
-            var timer = new Timer() { Interval = 20 };
+            var timer = new Timer() { Interval = 10 };
             timer.Tick += (sender, args) => Invalidate();
             timer.Start();
-            MouseMove += (sender, args) => camera = new Vector(args.Location);
-            Paint += (sender, args) => DrawRayCast(args.Graphics, mapImage, camera, map.Walls, 500);
+            var watch = new Stopwatch();
+            watch.Start();
+            MouseMove += (sender, args) => camera = new Vector(args.Location) / map.ChunkSize;
+            Paint += (sender, args) => DrawRayCast(args.Graphics, mapImage, camera, map.Walls, 500, map.ChunkSize);
+            Paint += (sender, args) =>
+            {
+                var curent = watch.ElapsedMilliseconds;
+                var frameTime = curent - lastFrame;
+                args.Graphics.DrawString((1000 / frameTime).ToString(), new Font("arial", 10), Brushes.Red, 0, 0);
+                lastFrame = curent;
+            };
             Invalidate();
         }
 
@@ -36,7 +47,7 @@ namespace BloodyHell
             Square closestWall = null;
             foreach(var wall in walls)
             {
-                if ((wall.Center - ray.Location).Length > 320)
+                if ((wall.Center - ray.Location).Length > 10)
                     continue;
                 var point = ray.GetIntersectionPoint(wall);
                 if (closestPoint == null ||
@@ -49,7 +60,7 @@ namespace BloodyHell
             return Tuple.Create(closestPoint, closestWall);
         }
 
-        private void DrawRayCast(Graphics graphics, Bitmap background, Vector camera, List<Square> walls, int rayCount)
+        private void DrawRayCast(Graphics graphics, Bitmap background, Vector camera, List<Square> walls, int rayCount, int chunkSize)
         {
             var ray = new Ray(camera, 0);
             var brush = new TextureBrush(background);
@@ -60,14 +71,15 @@ namespace BloodyHell
                 var a = FirstIntersectionOfRay(ray, walls);
                 HittedWalls.Add(a.Item2);
                 if (a.Item1 != null)
-                    graphics.DrawLine(pen, camera, a.Item1);
+                    graphics.DrawLine(pen, camera * chunkSize, a.Item1 * chunkSize);
                 else
-                    graphics.DrawLine(pen, camera, camera + ray.Direction * 320);
+                    graphics.DrawLine(pen, camera * chunkSize, (camera + ray.Direction * 10) * chunkSize);
                 ray.Rotate(Math.PI * 2 / rayCount);
             }
             foreach (var square in HittedWalls)
             {
-                graphics.FillRectangle(brush, square);
+                if (square != null)
+                    graphics.FillRectangle(brush, square.Location.X * chunkSize, square.Location.Y * chunkSize, chunkSize, chunkSize);
             }
         }
     }

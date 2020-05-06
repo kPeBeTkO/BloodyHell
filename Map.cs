@@ -51,7 +51,7 @@ namespace BloodyHell
                     if (random.Next(0, 5) == 0)
                     {
                         Chunks[j, i] = wall;
-                        Walls.Add(new Square(new Vector(j * ChunkSize, i * ChunkSize), ChunkSize));
+                        Walls.Add(new Square(new Vector(j, i), 1));
                     }
                     else
                         Chunks[j, i] = empty;
@@ -90,7 +90,7 @@ namespace BloodyHell
                 {
                     Chunks[j, i] = textureDictionary[line[j]];
                     if (Chunks[j, i].Type == ChunkType.Wall)
-                        Walls.Add(new Square(new Vector(j * ChunkSize, i * ChunkSize), ChunkSize));
+                        Walls.Add(new Square(new Vector(j, i), 1));
                 }
             }
         }
