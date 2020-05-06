@@ -8,7 +8,7 @@ namespace BloodyHell.Entities
 {
     class Monster : IEntity
     {
-        public void MakeTurn()
+        public void MakeTurn(long timeElapsed)
         {
             throw new NotImplementedException();
         }

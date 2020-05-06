@@ -8,6 +8,6 @@ namespace BloodyHell
 {
     public interface IEntity
     {
-        void MakeTurn();
+        void MakeTurn(long timeElapsed);
     }
 }
