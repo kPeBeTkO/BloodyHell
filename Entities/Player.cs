@@ -19,13 +19,15 @@ namespace BloodyHell.Entities
     class Player : IEntity
     {
         public Dictionary<Parameters, int> playerState;
-        public Vector Location;
-        public Vector Direction = new Vector(0,1);
-        public Vector Velocity = Vector.Zero;
+        public Vector Location { get; private set; }
+        public Vector Direction { get; private set; }
+        public Vector Velocity { get; private set; }
 
         public Player(Vector location)
         {
             Location = location;
+            Velocity = Vector.Zero;
+            Direction = new Vector(0, 1);
         }
 
         public Player(Dictionary<Parameters, int> playerState)

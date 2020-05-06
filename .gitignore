@@ -17,8 +17,8 @@
 mono_crash.*
 
 # Build results
-bin/Debug
-obj/Debug
+/bin/
+/obj/
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
