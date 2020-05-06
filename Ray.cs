@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
-using NUnit.Framework;
 using System.Collections;
 
 namespace RayCasting
@@ -124,7 +123,7 @@ namespace RayCasting
         }
     }
     
-    [TestFixture]
+    /*[TestFixture]
     public class RayCastTests
     {
         [TestCase(15, 5, Math.PI, 0, 0, 10, 10, 5)]
@@ -138,5 +137,5 @@ namespace RayCasting
             var square = new Square(new Vector(sqrX, sqrY), sqrSize);
             Assert.AreEqual(new Vector(expX, expY), ray.GetIntersectionPoint(square));
         }
-    }
+    }*/
 }
