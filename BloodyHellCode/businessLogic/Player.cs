@@ -16,7 +16,7 @@ namespace BloodyHell.Entities
         skillPoints
     }
 
-    class Player : IEntity
+    public class Player : IEntity
     {
         public Dictionary<Parameters, int> playerState;
         public Vector Location { get; private set; }
@@ -63,7 +63,6 @@ namespace BloodyHell.Entities
                     }
                     break;
                 default:
-                    // дописать
                     break;
             }
         }
