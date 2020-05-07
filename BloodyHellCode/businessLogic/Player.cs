@@ -16,7 +16,7 @@ namespace BloodyHell.Entities
         skillPoints
     }
 
-    public class Player : IEntity
+    class Player : IEntity
     {
         public Dictionary<Parameters, int> playerState;
         public Vector Location { get; private set; }
@@ -63,6 +63,7 @@ namespace BloodyHell.Entities
                     }
                     break;
                 default:
+                    // дописать
                     break;
             }
         }
@@ -70,12 +71,22 @@ namespace BloodyHell.Entities
         public void SetVelosity(Vector userInput, Vector interest)
         {
             Direction = (interest - Location).Normalize();
-            Velocity = userInput.Rotate(Direction.Angle - Math.PI / 2) * 2;
+            Velocity = userInput.Rotate(Direction.Angle - Math.PI / 2) * 4;
         }
 
-        public void MakeTurn(long timeElapsed)
+        public void MakeTurn(long timeElapsed, List<Square> walls)
         {
-            Location += Velocity * (timeElapsed / 1000.0f);
+            //var firstWallOnWay = new Ray(Location, Velocity.Angle).FirstIntersectionOfRay(walls);
+            var delta = Velocity * (timeElapsed / 1000.0f);
+            var rayX = Velocity.X > 0 ? new Ray(Location, 0) : new Ray(Location, Math.PI);
+            var rayY = Velocity.Y > 0 ? new Ray(Location, -Math.PI / 2) : new Ray(Location, Math.PI / 2);
+            /*var intersectionX = rayX.FirstIntersectionOfRay(walls);
+            var intersectionY = rayY.FirstIntersectionOfRay(walls);
+            var distanceX =- Location.X + intersectionX.Item1.X;
+            var distanceY =- Location.Y + intersectionY.Item1.Y;*/
+            var deltaX = delta.X;
+            var deltaY = delta.Y;
+            Location += new Vector(deltaX, deltaY);
         }
     }
 }

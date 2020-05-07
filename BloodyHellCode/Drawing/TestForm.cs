@@ -35,7 +35,6 @@ namespace BloodyHell
             [Keys.A] = new Vector(1, 0),
             [Keys.D] = new Vector(-1, 0),
         };
-
         public TestForm()
         {
             BackColor = Color.Black;
@@ -49,7 +48,6 @@ namespace BloodyHell
             watch.Start();
             var timer = new Timer() { Interval = 10 };
             var level = new Level(map, new Player(mouse));
-
             timer.Tick += (sender, args) =>
             {
                 level.Player.SetVelosity(userInput, mouse);
@@ -60,47 +58,22 @@ namespace BloodyHell
                 Invalidate();
             };
             timer.Start();
-
             KeyUp += (sender, args) =>
             {
                 if (directions.ContainsKey(args.KeyCode))
                     keysPressed.Remove(args.KeyCode);
             };
-
             PreviewKeyDown += (sender, args) =>
             {
                 if (directions.ContainsKey(args.KeyCode))
                     keysPressed.Add(args.KeyCode);
             };
-
             MouseMove += (sender, args) => mouse = new Vector(args.Location) / map.ChunkSize;
             Paint += (sender, args) => DrawRayCast(args.Graphics,  level, 500);
-
             Paint += (sender, args) =>
             {
                 args.Graphics.DrawString((1000.0 / frameTime).ToString(), new Font("arial", 10), Brushes.Red, 0, 0);
             };
-        }
-
-        private Tuple<Vector,Square> FirstIntersectionOfRay(Ray ray, List<Square> walls)
-        {
-            if (walls.Count == 0)
-                return null;
-            Vector closestPoint = null;
-            Square closestWall = null;
-            foreach(var wall in walls)
-            {
-                if ((wall.Center - ray.Location).Length > 10)
-                    continue;
-                var point = ray.GetIntersectionPoint(wall);
-                if (closestPoint == null ||
-                    (point != null && (point - ray.Location).Length < (closestPoint - ray.Location).Length))
-                {
-                    closestPoint = point;
-                    closestWall = wall;
-                }
-            }
-            return Tuple.Create(closestPoint, closestWall);
         }
 
         private void DrawRayCast(Graphics graphics,  Level level, int rayCount)
@@ -115,7 +88,7 @@ namespace BloodyHell
             
             for (var i = 0; i < rayCount; i++)
             {
-                var a = FirstIntersectionOfRay(ray, walls);
+                var a = ray.FirstIntersectionOfRay(walls);
                 HittedWalls.Add(a.Item2);
                 if (a.Item1 != null)
                     graphics.DrawLine(pen, camera * chunkSize, a.Item1 * chunkSize);

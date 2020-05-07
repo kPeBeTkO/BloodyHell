@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Collections;
+using NUnit.Framework;
 
 namespace RayCasting
 {
@@ -34,26 +35,6 @@ namespace RayCasting
             return null;
         }
 
-        /*public Vector GetIntersectionPoint(Square square)
-        {
-            var corner = square.Location;
-            var size = square.Size;
-            var center = corner + new Vector(size, size) / 2;
-            var sector = Math.Floor(((Location - center).Angle + Math.PI / 4) / (Math.PI / 2));
-            switch(sector)
-            {
-                case 0:
-                    return GetIntersectionPoint(new Line(corner + new Vector(size, 0), corner + new Vector(size, size)));
-                case -1:
-                    return GetIntersectionPoint(new Line(corner , corner + new Vector(size, 0)));
-                case 1:
-                    return GetIntersectionPoint(new Line(corner + new Vector(0, size), corner + new Vector(size, size)));
-                default:
-                    return GetIntersectionPoint(new Line(corner , corner + new Vector(0, size)));
-
-            }
-        }*/
-
         public Vector GetIntersectionPoint(Square square)
         {
             Vector min = null;
@@ -69,6 +50,27 @@ namespace RayCasting
         public void Rotate(double angle)
         {
             Direction = Direction.Rotate(angle);
+        }
+
+        public Tuple<Vector, Square> FirstIntersectionOfRay(List<Square> walls)
+        {
+            if (walls.Count == 0)
+                return null;
+            Vector closestPoint = null;
+            Square closestWall = null;
+            foreach (var wall in walls)
+            {
+                if ((wall.Center - Location).Length > 10)
+                    continue;
+                var point = GetIntersectionPoint(wall);
+                if (closestPoint == null ||
+                    (point != null && (point - Location).Length < (closestPoint - Location).Length))
+                {
+                    closestPoint = point;
+                    closestWall = wall;
+                }
+            }
+            return Tuple.Create(closestPoint, closestWall);
         }
     }
 
@@ -120,6 +122,22 @@ namespace RayCasting
         public double GetWallPart(Vector p)
         {
             return (p - Start).Length / (End - Start).Length;
+        }
+    }
+
+    [TestFixture]
+    public class RayCastTests
+    {
+        [TestCase(15, 5, Math.PI, 0, 0, 10, 10, 5)]
+        [TestCase(5, 15, -Math.PI / 2, 0, 0, 10, 5, 10)]
+        [TestCase(-5, 5, 0, 0, 0, 10, 0, 5)]
+        public static void TestSquareRayCollision(int rayX, int rayY, double alpha,
+                                                  int sqrX, int sqrY, int sqrSize,
+                                                  float expX, float expY)
+        {
+            var ray = new Ray(new Vector(rayX, rayY), alpha);
+            var square = new Square(new Vector(sqrX, sqrY), sqrSize);
+            Assert.AreEqual(new Vector(expX, expY), ray.GetIntersectionPoint(square));
         }
     }
 }

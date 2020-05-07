@@ -17,6 +17,8 @@
 mono_crash.*
 
 # Build results
+/BloodyHellTests/obj/
+/BloodyHellTests/bin/
 /bin/
 /obj/
 [Dd]ebug/

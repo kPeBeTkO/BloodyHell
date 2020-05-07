@@ -20,7 +20,7 @@ namespace BloodyHell
 
         public void Update(long timeElapsed)
         {
-            Player.MakeTurn(timeElapsed);
+            Player.MakeTurn(timeElapsed, Map.Walls);
         }
     }
 }
