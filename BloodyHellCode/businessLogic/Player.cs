@@ -22,6 +22,7 @@ namespace BloodyHell.Entities
         public Vector Location { get; private set; }
         public Vector Direction { get; private set; }
         public Vector Velocity { get; private set; }
+        private float playerSize = 0.3f;
 
         public Player(Vector location)
         {
@@ -76,17 +77,28 @@ namespace BloodyHell.Entities
 
         public void MakeTurn(long timeElapsed, List<Square> walls)
         {
-            //var firstWallOnWay = new Ray(Location, Velocity.Angle).FirstIntersectionOfRay(walls);
+            var firstWallOnWay = new Ray(Location, Velocity.Angle).FirstIntersectionOfRay(walls);
             var delta = Velocity * (timeElapsed / 1000.0f);
             var rayX = Velocity.X > 0 ? new Ray(Location, 0) : new Ray(Location, Math.PI);
-            var rayY = Velocity.Y > 0 ? new Ray(Location, -Math.PI / 2) : new Ray(Location, Math.PI / 2);
-            /*var intersectionX = rayX.FirstIntersectionOfRay(walls);
+            var rayY = Velocity.Y > 0 ? new Ray(Location, Math.PI / 2) : new Ray(Location, -Math.PI / 2);
+            var intersectionX = rayX.FirstIntersectionOfRay(walls);
             var intersectionY = rayY.FirstIntersectionOfRay(walls);
-            var distanceX =- Location.X + intersectionX.Item1.X;
-            var distanceY =- Location.Y + intersectionY.Item1.Y;*/
+            /*var distanceX = -Location.X + intersectionX.Item1.X;
+            var distanceY = -Location.Y + intersectionY.Item1.Y;*/
             var deltaX = delta.X;
             var deltaY = delta.Y;
-            Location += new Vector(deltaX, deltaY);
+            if (firstWallOnWay.Item1 == null || (Location-firstWallOnWay.Item1).Length > playerSize)
+            {
+                Location += new Vector(deltaX, deltaY);
+            }
+            else
+            {
+                if (intersectionX.Item1 != null && Location.DistanceTo(intersectionX.Item1) < playerSize)
+                    deltaX = 0;
+                if (intersectionY.Item1 != null && Location.DistanceTo(intersectionY.Item1) < playerSize)
+                    deltaY = 0;
+                Location += new Vector(deltaX, deltaY);
+            }
         }
     }
 }

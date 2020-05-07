@@ -41,7 +41,7 @@ namespace BloodyHell
             Width = 600;
             Height = 600;
             DoubleBuffered = true;
-            var map = new Map(20, 20);
+            var map = new Map("TestLevel");
             curentMapImage = map.GetMapImage();
             mouse = new Vector(5, 5);
             var watch = new Stopwatch();
