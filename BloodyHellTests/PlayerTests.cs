@@ -5,7 +5,7 @@ using System;
 
 namespace BloodyHellTests
 {
-    public class Tests
+    public class PlayerTests
     {
         [SetUp]
         public void Setup()
