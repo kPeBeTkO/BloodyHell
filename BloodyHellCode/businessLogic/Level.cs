@@ -20,6 +20,7 @@ namespace BloodyHell
         {
             LevelName = levelName;
             LoadFromFile();
+            Map = new Map(levelName);
         }
         public Level(Map map, Player player)
         {
