@@ -14,7 +14,7 @@ namespace BloodyHell
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new TestForm());
-            //Application.Run(new GameForm(new List<string>() { "TestLevel" }));
+            //Application.Run(new GameForm(new List<string>() { "DemoLevel", "TestLevel" }));
         }
     }
 }

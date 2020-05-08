@@ -1,0 +1,8 @@
+﻿7
+Player 2 2
+Exit 18 28
+Monster 2 5 1 4 10 7
+Monster 3 10 1 9 11 13
+Monster 22 6 16 4 29 9
+Monster 20 15 17 14 23 17
+Monster 15 2 12 1 29 3

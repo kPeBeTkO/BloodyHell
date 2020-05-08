@@ -38,16 +38,15 @@ namespace BloodyHell
         public TestForm()
         {
             BackColor = Color.Black;
-            Width = 600;
-            Height = 600;
+            Width = 1280;
+            Height = 720;
             DoubleBuffered = true;
-            var map = new Map("TestLevel");
-            curentMapImage = map.GetMapImage();
+            var level = new Level("DemoLevel");
+            curentMapImage = level.Map.GetMapImage();
             mouse = new Vector(5, 5);
             var watch = new Stopwatch();
             watch.Start();
             var timer = new Timer() { Interval = 10 };
-            var level = new Level("TestLevel");
             timer.Tick += (sender, args) =>
             {
                 level.Player.SetVelosity(userInput, mouse);
@@ -68,7 +67,7 @@ namespace BloodyHell
                 if (directions.ContainsKey(args.KeyCode))
                     keysPressed.Add(args.KeyCode);
             };
-            MouseMove += (sender, args) => mouse = new Vector(args.Location) / map.ChunkSize;
+            MouseMove += (sender, args) => mouse = new Vector(args.Location) / level.Map.ChunkSize;
             MouseDown += (sender, args) =>
             {
                 level.Player.Attack();
