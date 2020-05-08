@@ -18,38 +18,42 @@ namespace BloodyHell.Entities
 
     public class Player : IEntity
     {
-        public Dictionary<Parameters, int> playerState;
+        public Dictionary<Parameters, int> State;
         public Vector Location { get; private set; }
         public Vector Direction { get; private set; }
         public Vector Velocity { get; private set; }
-        private float playerSize = 0.3f;
+        public const float Size = 0.3f;
+        public const float DefaultSpeed = 4;
+        public float CurentSpeed { get { return DefaultSpeed * (1 + State[Parameters.Speed] * 0.2f); } }
 
         public Player(Vector location)
         {
+            State = new Dictionary<Parameters, int>();
             Location = location;
             Velocity = Vector.Zero;
             Direction = new Vector(0, 1);
+            State[Parameters.Speed] = 0;
         }
 
         public Player(Dictionary<Parameters, int> playerState)
         {
-            this.playerState = playerState;
+            this.State = playerState;
         }
 
         public void AddExperience(int count)
         {
-            playerState[Parameters.Experience] += count;
-            if (playerState[Parameters.Experience] >= 100)
+            State[Parameters.Experience] += count;
+            if (State[Parameters.Experience] >= 100)
             {
                 LevelUp();
-                playerState[Parameters.Experience] -= 100;
+                State[Parameters.Experience] -= 100;
             }
         }
 
         public void LevelUp()
         {
-            playerState[Parameters.Level]++;
-            playerState[Parameters.skillPoints]++;
+            State[Parameters.Level]++;
+            State[Parameters.skillPoints]++;
         }
 
         public void DistributeSkills(Parameters state)
@@ -57,10 +61,10 @@ namespace BloodyHell.Entities
             switch(state) // сделать больше стат 
             {
                 case Parameters.Speed:
-                    if (playerState[Parameters.skillPoints] > 0)
+                    if (State[Parameters.skillPoints] > 0)
                     {
-                        playerState[Parameters.Speed] += 5;
-                        playerState[Parameters.skillPoints]--;
+                        State[Parameters.Speed] += 5;
+                        State[Parameters.skillPoints]--;
                     }
                     break;
                 default:
@@ -72,11 +76,16 @@ namespace BloodyHell.Entities
         public void SetVelosity(Vector userInput, Vector interest)
         {
             Direction = (interest - Location).Normalize();
-            Velocity = userInput.Rotate(Direction.Angle - Math.PI / 2) * 4;
+            Velocity = userInput.Rotate(Direction.Angle - Math.PI / 2) * CurentSpeed;
         }
 
         public void MakeTurn(long timeElapsed, List<Square> walls)
         {
+            if (walls == null || walls.Count == 0)
+            {
+                Location += Velocity * (timeElapsed / 1000.0f);
+                return;
+            }
             var firstWallOnWay = new Ray(Location, Velocity.Angle).FirstIntersectionOfRay(walls);
             var delta = Velocity * (timeElapsed / 1000.0f);
             var rayX = Velocity.X > 0 ? new Ray(Location, 0) : new Ray(Location, Math.PI);
@@ -87,15 +96,15 @@ namespace BloodyHell.Entities
             var distanceY = -Location.Y + intersectionY.Item1.Y;*/
             var deltaX = delta.X;
             var deltaY = delta.Y;
-            if (firstWallOnWay.Item1 == null || (Location-firstWallOnWay.Item1).Length > playerSize)
+            if (firstWallOnWay.Item1 == null || (Location-firstWallOnWay.Item1).Length > Size)
             {
                 Location += new Vector(deltaX, deltaY);
             }
             else
             {
-                if (intersectionX.Item1 != null && Location.DistanceTo(intersectionX.Item1) < playerSize)
+                if (intersectionX.Item1 != null && Location.DistanceTo(intersectionX.Item1) < Size)
                     deltaX = 0;
-                if (intersectionY.Item1 != null && Location.DistanceTo(intersectionY.Item1) < playerSize)
+                if (intersectionY.Item1 != null && Location.DistanceTo(intersectionY.Item1) < Size)
                     deltaY = 0;
                 Location += new Vector(deltaX, deltaY);
             }
