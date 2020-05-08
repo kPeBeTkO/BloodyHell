@@ -48,9 +48,13 @@ namespace BloodyHell
             watch.Start();
             var timer = new Timer() { Interval = 10 };
             var level = new Level(map, new Player(mouse));
+            var monster = new Monster(new Vector(20f, 30f));
             timer.Tick += (sender, args) =>
             {
+                monster.IsPlayer(level.Player);
                 level.Player.SetVelosity(userInput, mouse);
+                monster.SetVelosityMonster();
+                monster.IsWall(level.Map);
                 var curent = watch.ElapsedMilliseconds;
                 frameTime = curent - lastFrame;
                 lastFrame = curent;
@@ -74,6 +78,7 @@ namespace BloodyHell
             {
                 args.Graphics.DrawString((1000.0 / frameTime).ToString(), new Font("arial", 10), Brushes.Red, 0, 0);
             };
+            Paint += (sender, args) => DrawMonster(args.Graphics, monster);
         }
 
         private void DrawRayCast(Graphics graphics,  Level level, int rayCount)
@@ -103,6 +108,12 @@ namespace BloodyHell
             }
             graphics.FillEllipse(Brushes.Red, (camera.X - 0.3f) * chunkSize, (camera.Y - 0.3f) * chunkSize, chunkSize * 0.6f , chunkSize * 0.6f);
             graphics.DrawLine(Pens.Silver, camera * chunkSize, (camera + level.Player.Direction) * chunkSize);
+        }
+
+        private void DrawMonster(Graphics graphics, Monster monster)
+        {
+            var location = monster.location;
+            graphics.FillRectangle(Brushes.Gray, new RectangleF(location.X - 1f, location.Y - 1f, 10, 10));
         }
     }
 }
