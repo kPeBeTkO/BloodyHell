@@ -61,7 +61,7 @@ namespace BloodyHell
             {
                 var line = Player.Location - Monsters[i].Location;
 
-                if (line.Length < 2f && Player.IsAttack)
+                if (line.Length < 2f && Player.Attacing)
                 {
                     Monsters.RemoveAt(i);
                 }
@@ -75,7 +75,7 @@ namespace BloodyHell
         public void Update(long timeElapsed)
         {
             Player.MakeTurn(timeElapsed, Map.Walls);
-            
+            KillMonsterOrPlayer();
             foreach (var monster in Monsters)
             {
                 monster.MakeTurn(timeElapsed, Player);

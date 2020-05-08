@@ -69,6 +69,10 @@ namespace BloodyHell
                     keysPressed.Add(args.KeyCode);
             };
             MouseMove += (sender, args) => mouse = new Vector(args.Location) / map.ChunkSize;
+            MouseDown += (sender, args) =>
+            {
+                level.Player.Attack();
+            };
             Paint += (sender, args) => DrawRayCast(args.Graphics,  level, 500);
             Paint += (sender, args) =>
             {
@@ -102,8 +106,19 @@ namespace BloodyHell
                 if (square != null)
                     graphics.FillRectangle(brush, square.Location.X * chunkSize, square.Location.Y * chunkSize, chunkSize, chunkSize);
             }
-            graphics.FillEllipse(Brushes.Red, (camera.X - 0.3f) * chunkSize, (camera.Y - 0.3f) * chunkSize, chunkSize * 0.6f , chunkSize * 0.6f);
-            graphics.DrawLine(Pens.Silver, camera * chunkSize, (camera + level.Player.Direction) * chunkSize);
+            DrawPlayer(graphics, level.Player, chunkSize);
+        }
+
+        private void DrawPlayer(Graphics graphics, Player player, int chunkSize)
+        {
+            var camera = player.Location;
+            if (player.Attacing)
+            {
+                //graphics.DrawPie(Pens.Azure, (camera.X - 1) * chunkSize, (camera.Y - 1) * chunkSize, chunkSize * 2, chunkSize * 2, (float)player.Direction.Angle - (float)Math.PI / 4, (float)Math.PI / 2);
+                graphics.FillPie(Brushes.Red, (camera.X - 2) * chunkSize, (camera.Y - 2) * chunkSize, chunkSize * 4, chunkSize * 4, (float)(player.Direction.Angle * 180 / Math.PI - 45), 90);
+            }
+            graphics.FillEllipse(Brushes.Blue, (camera.X - 0.3f) * chunkSize, (camera.Y - 0.3f) * chunkSize, chunkSize * 0.6f, chunkSize * 0.6f);
+            graphics.DrawLine(Pens.Silver, camera * chunkSize, (camera + player.Direction) * chunkSize);
         }
 
         private void DrawMonster(Graphics graphics, List<Monster> monsters, int chunkSize)
