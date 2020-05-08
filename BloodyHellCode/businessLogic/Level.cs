@@ -57,19 +57,20 @@ namespace BloodyHell
 
         public void KillMonsterOrPlayer()
         {
-            for (int i = 0; i < Monsters.Count; i++)
-            {
-                var line = Player.Location - Monsters[i].Location;
+            Monsters = Monsters
+                .Where(monster =>
+                {
+                    var line = Player.Location - monster.Location;
+                    return line.Length >= 2f || !Player.Attacing;
+                })
+                .ToList();
 
-                if (line.Length < 2f && Player.Attacing)
+            Player.Alive = Monsters
+                .All(monster =>
                 {
-                    Monsters.RemoveAt(i);
-                }
-                else if (line.Length < 1f)
-                {
-                    Player.Alive = false;
-                }
-            }
+                    var line = Player.Location - monster.Location;
+                    return line.Length >= 1f;
+                });
         }
 
         public void Update(long timeElapsed)
