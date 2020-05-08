@@ -48,16 +48,16 @@ namespace BloodyHell
             watch.Start();
             var timer = new Timer() { Interval = 10 };
             var level = new Level(map, new Player(mouse));
-            var monster = new Monster(new Vector(20f, 30f));
+            var monster = new Monster(new Vector(1f, 2f), map.Width, map.Heigth);
             timer.Tick += (sender, args) =>
             {
-                monster.IsPlayer(level.Player);
                 level.Player.SetVelosity(userInput, mouse);
                 monster.SetVelosityMonster();
-                monster.IsWall(level.Map);
+                monster.IsWall();
                 var curent = watch.ElapsedMilliseconds;
                 frameTime = curent - lastFrame;
                 lastFrame = curent;
+                monster.MakeTurn(frameTime, level.Player);
                 level.Update(frameTime);
                 Invalidate();
             };
@@ -78,7 +78,7 @@ namespace BloodyHell
             {
                 args.Graphics.DrawString((1000.0 / frameTime).ToString(), new Font("arial", 10), Brushes.Red, 0, 0);
             };
-            Paint += (sender, args) => DrawMonster(args.Graphics, monster);
+            Paint += (sender, args) => DrawMonster(args.Graphics, monster, level.Map.ChunkSize);
         }
 
         private void DrawRayCast(Graphics graphics,  Level level, int rayCount)
@@ -110,10 +110,10 @@ namespace BloodyHell
             graphics.DrawLine(Pens.Silver, camera * chunkSize, (camera + level.Player.Direction) * chunkSize);
         }
 
-        private void DrawMonster(Graphics graphics, Monster monster)
+        private void DrawMonster(Graphics graphics, Monster monster, int chunkSize)
         {
             var location = monster.location;
-            graphics.FillRectangle(Brushes.Gray, new RectangleF(location.X - 1f, location.Y - 1f, 10, 10));
+            graphics.FillRectangle(Brushes.Gray, new RectangleF(location.X * chunkSize, location.Y * chunkSize, 0.5f * chunkSize, 0.5f * chunkSize));
         }
     }
 }

@@ -24,6 +24,8 @@ namespace BloodyHell.Entities
         public Vector Velocity { get; private set; }
         public const float Size = 0.3f;
         public const float DefaultSpeed = 4;
+        public bool IsKill = false;
+
         public float CurentSpeed { get { return DefaultSpeed * (1 + State[Parameters.Speed] * 0.2f); } }
 
         public Player(Vector location)
