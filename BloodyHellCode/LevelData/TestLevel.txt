@@ -1,3 +1,4 @@
 ﻿2
+Monster 2 3 1 1 8 8
 Player 5 5
 Exit 9 9

@@ -16,16 +16,19 @@ namespace BloodyHell
         public List<IEntity> Entities;
         public Player Player { get; private set; }
         public Vector Exit { get; private set; }
+        public List<Monster> Monsters;
         public Level(string levelName)
         {
             LevelName = levelName;
+            Monsters = new List<Monster>();
             LoadFromFile();
             Map = new Map(levelName);
         }
-        public Level(Map map, Player player)
+        public Level(Map map, Player player, List<Monster> monsters)
         {
             Map = map;
             Player = player;
+            Monsters = monsters;
         }
 
         public void LoadFromFile()
@@ -44,8 +47,27 @@ namespace BloodyHell
                         Exit = new Vector(int.Parse(line[1]), int.Parse(line[2]));
                         break;
                     case "Monster":
-                        //надо дописать
+                        Monsters.Add(new Monster(new Vector(int.Parse(line[1]), int.Parse(line[2])),
+                                                 new Vector(int.Parse(line[3]), int.Parse(line[4])),
+                                                 new Vector(int.Parse(line[5]), int.Parse(line[6]))));
                         break;
+                }
+            }
+        }
+
+        public void KillMonsterOrPlayer()
+        {
+            for (int i = 0; i < Monsters.Count; i++)
+            {
+                var line = Player.Location - Monsters[i].Location;
+
+                if (line.Length < 2f && Player.IsAttack)
+                {
+                    Monsters.RemoveAt(i);
+                }
+                else if (line.Length < 1f)
+                {
+                    Player.Alive = false;
                 }
             }
         }
@@ -53,6 +75,11 @@ namespace BloodyHell
         public void Update(long timeElapsed)
         {
             Player.MakeTurn(timeElapsed, Map.Walls);
+            
+            foreach (var monster in Monsters)
+            {
+                monster.MakeTurn(timeElapsed, Player);
+            }
         }
     }
 }

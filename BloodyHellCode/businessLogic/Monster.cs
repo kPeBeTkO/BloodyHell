@@ -9,49 +9,35 @@ namespace BloodyHell.Entities
 {
     public class Monster : IEntity
     {
-        public Vector location;
+        public Vector Location;
         public Vector Velosity;
-        public float Width;
-        public float Heigth;
+        //public float Width;
+        //public float Heigth;
+        public Vector Start;
+        public Vector End;
         public bool IsTarget;
         public bool IsKill = false;
 
-        public Monster(Vector vector, float Width, float Heigth)
+        public Monster(Vector vector, Vector start, Vector end)
         {
-            location = vector;
+            Location = vector;
             Velosity = new Vector(1f, 1f);
-            this.Width = Width;
-            this.Heigth = Heigth;
+            Start = start;
+            End = end;
         }
 
         public void IsPlayer(Player player, long timeElapsed)
         {
-            var linePlayer = location - player.Location;
+            var linePlayer = Location - player.Location;
 
             if (linePlayer.Length <= 3f && IsTarget)
             {
-                Velosity = linePlayer.Normalize() * -0.03f * (timeElapsed / 15.0f);
-            }
-
-            if (linePlayer.Length <= 1f && IsKill)
-            {
-                player.State[Parameters.Experience] += 50;
-            }
-
-            if (linePlayer.Length <= 0.5f && !IsKill)
-            {
-                player.IsKill = true;
+                Velosity = linePlayer.Normalize() * -2f;
             }
         }
-
-        public void SetVelosityMonster()
-        {
-            location += Velosity;
-        }
-
         public void IsWall()
         {
-            if (location.X > Width || location.X < 0 || location.Y > Heigth || location.Y < 0)
+            if (Location.X > End.Y || Location.X < Start.X || Location.Y > End.X || Location.Y < Start.Y)
             {
                 IsTarget = false;
             }
@@ -65,16 +51,19 @@ namespace BloodyHell.Entities
         {
             var random = new Random();
 
-            if (!IsTarget && location.X > random.Next(1, (int)Width))
-                Velosity = new Vector(-Velosity.X, Velosity.Y); // * (timeElapsed / 15.0f);
-            else if (!IsTarget && location.X < 0)
-                Velosity = new Vector(-Velosity.X, Velosity.Y); // * (timeElapsed / 15.0f);
+            if (!IsTarget && Location.X > End.X)
+                Velosity = new Vector(-Velosity.X, Velosity.Y);
+            else if (!IsTarget && Location.X < Start.X)
+                Velosity = new Vector(-Velosity.X, Velosity.Y);
 
-            if (!IsTarget && location.Y > random.Next(1, (int)Heigth))
-                Velosity = new Vector(Velosity.X, -Velosity.Y); // * (timeElapsed / 15.0f);
-            else if (!IsTarget && location.Y < 0)
-                Velosity = new Vector(Velosity.X, -Velosity.Y); // * (timeElapsed / 15.0f);
+            if (!IsTarget && Location.Y > End.Y)
+                Velosity = new Vector(Velosity.X, -Velosity.Y);
+            else if (!IsTarget && Location.Y < Start.Y)
+                Velosity = new Vector(Velosity.X, -Velosity.Y);
 
+            Location += Velosity * (timeElapsed / 1000.0f);
+
+            IsWall();
             IsPlayer(player, timeElapsed);
         }
     }

@@ -47,17 +47,13 @@ namespace BloodyHell
             var watch = new Stopwatch();
             watch.Start();
             var timer = new Timer() { Interval = 10 };
-            var level = new Level(map, new Player(mouse));
-            var monster = new Monster(new Vector(1f, 2f), map.Width, map.Heigth);
+            var level = new Level("TestLevel");
             timer.Tick += (sender, args) =>
             {
                 level.Player.SetVelosity(userInput, mouse);
-                monster.SetVelosityMonster();
-                monster.IsWall();
                 var curent = watch.ElapsedMilliseconds;
                 frameTime = curent - lastFrame;
                 lastFrame = curent;
-                monster.MakeTurn(frameTime, level.Player);
                 level.Update(frameTime);
                 Invalidate();
             };
@@ -78,7 +74,7 @@ namespace BloodyHell
             {
                 args.Graphics.DrawString((1000.0 / frameTime).ToString(), new Font("arial", 10), Brushes.Red, 0, 0);
             };
-            Paint += (sender, args) => DrawMonster(args.Graphics, monster, level.Map.ChunkSize);
+            Paint += (sender, args) => DrawMonster(args.Graphics, level.Monsters, level.Map.ChunkSize);
         }
 
         private void DrawRayCast(Graphics graphics,  Level level, int rayCount)
@@ -110,10 +106,13 @@ namespace BloodyHell
             graphics.DrawLine(Pens.Silver, camera * chunkSize, (camera + level.Player.Direction) * chunkSize);
         }
 
-        private void DrawMonster(Graphics graphics, Monster monster, int chunkSize)
+        private void DrawMonster(Graphics graphics, List<Monster> monsters, int chunkSize)
         {
-            var location = monster.location;
-            graphics.FillRectangle(Brushes.Gray, new RectangleF(location.X * chunkSize, location.Y * chunkSize, 0.5f * chunkSize, 0.5f * chunkSize));
+            foreach (var monster in monsters)
+            {
+                var location = monster.Location;
+                graphics.FillRectangle(Brushes.Gray, new RectangleF(location.X * chunkSize, location.Y * chunkSize, 0.5f * chunkSize, 0.5f * chunkSize));
+            }
         }
     }
 }
