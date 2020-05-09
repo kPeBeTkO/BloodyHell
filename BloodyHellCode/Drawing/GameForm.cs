@@ -72,6 +72,12 @@ namespace BloodyHell
                         Controls.Clear();
                     }
                 }
+                if (args.KeyCode == Keys.ShiftKey)
+                    game.CurentLevel.Player.Dash();
+            };
+            MouseDown += (sender, args) =>
+            {
+                game.CurentLevel.Player.Attack();
             };
             MouseMove += (sender, args) => mouse = new Vector(args.Location) / game.CurentLevel.Map.ChunkSize;
             Paint += (sender, args) =>
@@ -97,7 +103,7 @@ namespace BloodyHell
             {
                 Location = new Point(50, 100),
                 Text = "Speed: " + game.CurentLevel.Player.State[Parameters.Speed].ToString(),
-                BackColor = Color.Blue
+                BackColor = Color.White
             };
             Controls.Add(speed);
 
@@ -105,13 +111,14 @@ namespace BloodyHell
             {
                 Location = new Point(150, 100),
                 Text = "Count Desh: " + game.CurentLevel.Player.State[Parameters.DashCount].ToString(),
-                BackColor = Color.Blue
+                BackColor = Color.White
             };
             Controls.Add(countDesh);
 
             speed.Click += (sender, args) =>
             {
                 game.CurentLevel.Player.DistributeSkills(Parameters.Speed);
+                speed.Text = "Speed: " + game.CurentLevel.Player.State[Parameters.Speed].ToString();
                 Controls.Clear();
                 Controls.Add(speed);
                 Controls.Add(countDesh);
@@ -120,6 +127,7 @@ namespace BloodyHell
             countDesh.Click += (sender, args) =>
             {
                 game.CurentLevel.Player.DistributeSkills(Parameters.DashCount);
+                countDesh.Text = "Count Desh: " + game.CurentLevel.Player.State[Parameters.DashCount].ToString();
                 Controls.Clear();
                 Controls.Add(countDesh);
                 Controls.Add(speed);
@@ -149,7 +157,9 @@ namespace BloodyHell
 
         private void DrawGame(Graphics graphics)
         {
-            DrawRayCast(graphics, game.CurentLevel, 1000);
+            DrawRayCast(graphics, game.CurentLevel, 500);
+            DrawPlayer(graphics, game.CurentLevel.Player, game.CurentLevel.Map.ChunkSize);
+            DrawMonster(graphics, game.CurentLevel.Monsters, game.CurentLevel.Map.ChunkSize);
         }
 
         private void DrawRayCast(Graphics graphics, Level level, int rayCount)
@@ -177,8 +187,27 @@ namespace BloodyHell
                 if (square != null)
                     graphics.FillRectangle(brush, square.Location.X * chunkSize, square.Location.Y * chunkSize, chunkSize, chunkSize);
             }
-            graphics.FillEllipse(Brushes.Red, (camera.X - 0.3f) * chunkSize, (camera.Y - 0.3f) * chunkSize, chunkSize * 0.6f, chunkSize * 0.6f);
-            graphics.DrawLine(Pens.Silver, camera * chunkSize, (camera + level.Player.Direction) * chunkSize);
+        }
+
+        private void DrawPlayer(Graphics graphics, Player player, int chunkSize)
+        {
+            var camera = player.Location;
+            if (player.Attacing)
+            {
+                //graphics.DrawPie(Pens.Azure, (camera.X - 1) * chunkSize, (camera.Y - 1) * chunkSize, chunkSize * 2, chunkSize * 2, (float)player.Direction.Angle - (float)Math.PI / 4, (float)Math.PI / 2);
+                graphics.FillPie(Brushes.Red, (camera.X - 2) * chunkSize, (camera.Y - 2) * chunkSize, chunkSize * 4, chunkSize * 4, (float)(player.Direction.Angle * 180 / Math.PI - 45), 90);
+            }
+            graphics.FillEllipse(Brushes.Blue, (camera.X - 0.3f) * chunkSize, (camera.Y - 0.3f) * chunkSize, chunkSize * 0.6f, chunkSize * 0.6f);
+            graphics.DrawLine(Pens.Silver, camera * chunkSize, (camera + player.Direction) * chunkSize);
+        }
+
+        private void DrawMonster(Graphics graphics, List<Monster> monsters, int chunkSize)
+        {
+            foreach (var monster in monsters)
+            {
+                var location = monster.Location;
+                graphics.FillRectangle(Brushes.Gray, new RectangleF(location.X * chunkSize, location.Y * chunkSize, 0.5f * chunkSize, 0.5f * chunkSize));
+            }
         }
     }
 }

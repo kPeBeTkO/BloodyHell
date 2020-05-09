@@ -25,7 +25,7 @@ namespace BloodyHell.Entities
         public const long HitCooldown = 200;
         public const long HitDuration = 150;
         public const long DashDuration = 200;
-        public const int DashSpeedMultiplayer = 5;
+        public const int DashSpeedMultiplayer = 7;
         public const float DashHitRange = 1; 
 
         public Dictionary<Parameters, int> State;
@@ -33,7 +33,7 @@ namespace BloodyHell.Entities
         public Vector Direction { get; private set; }
         public Vector Velocity { get; private set; }
         public bool InDash { get; private set; } = false;
-        public int DashCount { get; private set; }
+        public int DashCount { get { return State[Parameters.DashCount]; } private set { State[Parameters.DashCount] = value; } }
         public bool Attacing { get; private set; } = false;
 
         private long time = 0;
@@ -54,7 +54,6 @@ namespace BloodyHell.Entities
             State[Parameters.Experience] = 0;
             State[Parameters.Level] = 0;
             State[Parameters.DashCount] = 10;
-            DashCount = 10;
         }
 
         public Player(Dictionary<Parameters, int> playerState)
@@ -135,24 +134,26 @@ namespace BloodyHell.Entities
             var delta = Velocity * (timeElapsed / 1000.0f);
             var rayX = Velocity.X > 0 ? new Ray(Location, 0) : new Ray(Location, Math.PI);
             var rayY = Velocity.Y > 0 ? new Ray(Location, Math.PI / 2) : new Ray(Location, -Math.PI / 2);
-            var intersectionX = rayX.FirstIntersectionOfRay(walls);
-            var intersectionY = rayY.FirstIntersectionOfRay(walls);
-            /*var distanceX = -Location.X + intersectionX.Item1.X;
-            var distanceY = -Location.Y + intersectionY.Item1.Y;*/
+            var intersectionX = rayX.FirstIntersectionOfRay(walls).Item1;
+            var intersectionY = rayY.FirstIntersectionOfRay(walls).Item1;
             var deltaX = delta.X;
             var deltaY = delta.Y;
-            if (firstWallOnWay.Item1 == null || (Location - firstWallOnWay.Item1).Length > Size)
+            if (intersectionX != null && Location.DistanceTo(intersectionX) - Size < Math.Abs(deltaX))
+                deltaX = Velocity.X > 0 ? intersectionX.X - Location.X - Size : intersectionX.X - Location.X + Size;
+            if (intersectionY != null && Location.DistanceTo(intersectionY) - Size < Math.Abs(deltaY))
+                deltaY = Velocity.Y > 0 ? intersectionY.Y - Location.Y - Size : intersectionY.Y - Location.Y + Size;
+            if ((intersectionX == null || Location.DistanceTo(intersectionX) - Size * 1.01 > Math.Abs(deltaX)) &&
+                (intersectionY == null || Location.DistanceTo(intersectionY) - Size * 1.01 > Math.Abs(deltaY)) &&
+                firstWallOnWay.Item1 != null && firstWallOnWay.Item1.DistanceTo(Location) - Size < delta.Length)
             {
-                Location += new Vector(deltaX, deltaY);
+                var corner = firstWallOnWay.Item2.GetClosestCornerToPoint(Location);
+                var point = firstWallOnWay.Item1;
+                if (point.X - corner.X < 0.01)
+                    deltaX = Velocity.X > 0 ? corner.X - Location.X - Size : corner.X - Location.X + Size;
+                else
+                    deltaY = Velocity.Y > 0 ? corner.Y - Location.Y - Size : corner.Y - Location.Y + Size;
             }
-            else
-            {
-                if (intersectionX.Item1 != null && Location.DistanceTo(intersectionX.Item1) < Size)
-                    deltaX = 0;
-                if (intersectionY.Item1 != null && Location.DistanceTo(intersectionY.Item1) < Size)
-                    deltaY = 0;
-                Location += new Vector(deltaX, deltaY);
-            }
+            Location += new Vector(deltaX, deltaY);
         }
 
         public void MakeTurn(long timeElapsed, List<Square> walls)

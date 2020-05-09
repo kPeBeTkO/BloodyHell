@@ -84,6 +84,19 @@ namespace RayCasting
             Size = size;
         }
 
+        public Vector GetClosestCornerToPoint(Vector point)
+        {
+            var min = Location;
+            for (var i = 0; i < 2; i++)
+                for (var j =0; j < 2; j++)
+                {
+                    var p = new Vector(Location.X + Size * i, Location.Y + Size * j);
+                    if (p.DistanceTo(point) < min.DistanceTo(point))
+                        min = p;
+                }
+            return min;
+        }
+
         public IEnumerator<Line> GetEnumerator()
         {
             yield return new Line(Location + new Vector(Size, 0), Location + new Vector(Size, Size));

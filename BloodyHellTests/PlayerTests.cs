@@ -84,7 +84,7 @@ namespace BloodyHellTests
 
             player.DistributeSkills(Parameters.Speed);
 
-            Assert.AreEqual(player.State[Parameters.Speed], 10);
+            Assert.AreEqual(player.State[Parameters.Speed], 6);
             Assert.AreEqual(player.State[Parameters.SkillPoints], 1);
         }
 
