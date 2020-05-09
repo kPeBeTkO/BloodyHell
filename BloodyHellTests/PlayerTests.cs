@@ -79,27 +79,27 @@ namespace BloodyHellTests
         public void TestDistributeSkills()
         {
             var playerState = new Dictionary<Parameters, int>() 
-            { { Parameters.skillPoints, 2 }, { Parameters.Speed, 5 } };
+            { { Parameters.SkillPoints, 2 }, { Parameters.Speed, 5 } };
             var player = new Player(playerState);
 
             player.DistributeSkills(Parameters.Speed);
 
             Assert.AreEqual(player.State[Parameters.Speed], 10);
-            Assert.AreEqual(player.State[Parameters.skillPoints], 1);
+            Assert.AreEqual(player.State[Parameters.SkillPoints], 1);
         }
 
         [Test]
         public void TestAddExperience()
         {
             var playerState = new Dictionary<Parameters, int>()
-            { { Parameters.Level, 0 }, { Parameters.Experience, 90 }, { Parameters.skillPoints, 0 } };
+            { { Parameters.Level, 0 }, { Parameters.Experience, 90 }, { Parameters.SkillPoints, 0 } };
             var player = new Player(playerState);
 
             player.AddExperience(30);
 
             Assert.AreEqual(player.State[Parameters.Level], 1);
             Assert.AreEqual(player.State[Parameters.Experience], 20);
-            Assert.AreEqual(player.State[Parameters.skillPoints], 1);
+            Assert.AreEqual(player.State[Parameters.SkillPoints], 1);
         }
     }
 }

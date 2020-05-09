@@ -66,6 +66,8 @@ namespace BloodyHell
             {
                 if (directions.ContainsKey(args.KeyCode))
                     keysPressed.Add(args.KeyCode);
+                if (args.KeyCode == Keys.ShiftKey)
+                    level.Player.Dash();
             };
             MouseMove += (sender, args) => mouse = new Vector(args.Location) / level.Map.ChunkSize;
             MouseDown += (sender, args) =>

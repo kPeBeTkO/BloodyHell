@@ -104,7 +104,7 @@ namespace BloodyHell
             var countDesh = new Button()
             {
                 Location = new Point(150, 100),
-                Text = "Count Desh: " + game.CurentLevel.Player.State[Parameters.CountDesh].ToString(),
+                Text = "Count Desh: " + game.CurentLevel.Player.State[Parameters.DashCount].ToString(),
                 BackColor = Color.Blue
             };
             Controls.Add(countDesh);
@@ -119,7 +119,7 @@ namespace BloodyHell
 
             countDesh.Click += (sender, args) =>
             {
-                game.CurentLevel.Player.DistributeSkills(Parameters.CountDesh);
+                game.CurentLevel.Player.DistributeSkills(Parameters.DashCount);
                 Controls.Clear();
                 Controls.Add(countDesh);
                 Controls.Add(speed);

@@ -8,13 +8,13 @@ using RayCasting;
 
 namespace BloodyHell.Entities
 {
-    public enum Parameters
+    public enum Parameters // добавть статы кроме скорости 
     {
-        CountDesh,
+        DashCount,
         Level,
         Speed,
         Experience,
-        skillPoints
+        SkillPoints
     }
 
     public class Player : IEntity
@@ -24,14 +24,21 @@ namespace BloodyHell.Entities
         public const float DefaultSpeed = 4;
         public const long HitCooldown = 200;
         public const long HitDuration = 150;
+        public const long DashDuration = 200;
+        public const int DashSpeedMultiplayer = 5;
+        public const float DashHitRange = 1; 
+
         public Dictionary<Parameters, int> State;
         public Vector Location { get; private set; }
         public Vector Direction { get; private set; }
         public Vector Velocity { get; private set; }
-        
+        public bool InDash { get; private set; } = false;
+        public int DashCount { get; private set; }
+        public bool Attacing { get; private set; } = false;
+
         private long time = 0;
         private long lastHit = 0;
-        public bool Attacing { get; private set; } = false;
+        private long lastDash = 0;
         public bool Alive = true;
 
         public float CurentSpeed { get { return DefaultSpeed * (1 + State[Parameters.Speed] * 0.2f); } }
@@ -42,11 +49,12 @@ namespace BloodyHell.Entities
             Location = location;
             Velocity = Vector.Zero;
             Direction = new Vector(0, 1);
-
-            for (Parameters i = 0; i <= Parameters.skillPoints; i++)
-            {
-                State[i] = 0;
-            }
+            State[Parameters.Speed] = 0;
+            State[Parameters.SkillPoints] = 0;
+            State[Parameters.Experience] = 0;
+            State[Parameters.Level] = 0;
+            State[Parameters.DashCount] = 10;
+            DashCount = 10;
         }
 
         public Player(Dictionary<Parameters, int> playerState)
@@ -67,30 +75,23 @@ namespace BloodyHell.Entities
         public void LevelUp()
         {
             State[Parameters.Level]++;
-            State[Parameters.skillPoints]++;
+            State[Parameters.SkillPoints]++;
         }
 
         public void DistributeSkills(Parameters state)
         {
-            switch(state)
-            {
-                case Parameters.Speed:
-                    if (State[Parameters.skillPoints] > 0)
-                    {
-                        State[Parameters.Speed] += 5;
-                        State[Parameters.skillPoints]--;
-                    }
-                    break;
-                case Parameters.CountDesh:
-                    if (State[Parameters.skillPoints] > 0)
-                    {
-                        State[Parameters.CountDesh] += 1;
-                        State[Parameters.skillPoints]--;
-                    }
-                    break;
-                default:
-                    break;
-            }
+            if (State[Parameters.SkillPoints] > 0)
+                switch (state)
+                {
+                    case Parameters.Speed:
+                        State[Parameters.Speed] += 1;
+                        State[Parameters.SkillPoints]--;
+                        break;
+                    case Parameters.DashCount:
+                        State[Parameters.DashCount] += 1;
+                        State[Parameters.SkillPoints]--;
+                        break;
+                }
         }
 
         public void SetVelosity(Vector userInput, Vector interest)
@@ -98,7 +99,8 @@ namespace BloodyHell.Entities
             if (!Alive)
                 return;
             Direction = (interest - Location).Normalize();
-            Velocity = userInput.Rotate(Direction.Angle - Math.PI / 2) * CurentSpeed;
+            if (!InDash)
+                Velocity = userInput.Rotate(Direction.Angle - Math.PI / 2) * CurentSpeed;
         }
 
         public void Attack()
@@ -112,15 +114,18 @@ namespace BloodyHell.Entities
             }
         }
 
-        public void MakeTurn(long timeElapsed, List<Square> walls)
+        public void Dash()
         {
-            time += timeElapsed;
-            if (time - lastHit > HitDuration)
-            {
-                Attacing = false;
-            }
-            if (!Alive)
+            if (DashCount <= 0)
                 return;
+            DashCount--;
+            InDash = true;
+            lastDash = time;
+            Velocity = Direction * CurentSpeed * DashSpeedMultiplayer;
+        }
+
+        private void Move(long timeElapsed, List<Square> walls)
+        {
             if (walls == null || walls.Count == 0)
             {
                 Location += Velocity * (timeElapsed / 1000.0f);
@@ -136,7 +141,7 @@ namespace BloodyHell.Entities
             var distanceY = -Location.Y + intersectionY.Item1.Y;*/
             var deltaX = delta.X;
             var deltaY = delta.Y;
-            if (firstWallOnWay.Item1 == null || (Location-firstWallOnWay.Item1).Length > Size)
+            if (firstWallOnWay.Item1 == null || (Location - firstWallOnWay.Item1).Length > Size)
             {
                 Location += new Vector(deltaX, deltaY);
             }
@@ -148,6 +153,22 @@ namespace BloodyHell.Entities
                     deltaY = 0;
                 Location += new Vector(deltaX, deltaY);
             }
+        }
+
+        public void MakeTurn(long timeElapsed, List<Square> walls)
+        {
+            time += timeElapsed;
+            if (time - lastHit > HitDuration)
+            {
+                Attacing = false;
+            }
+            if (time - lastDash > DashDuration)
+            {
+                InDash = false;
+            }
+            if (!Alive)
+                return;
+            Move(timeElapsed, walls);
         }
     }
 }

@@ -60,13 +60,15 @@ namespace BloodyHell
             foreach(var monster in Monsters.Where(x => x.Alive))
             {
                 var distance = monster.Location - Player.Location;
-                if (distance.Length <= Monster.HitRange)
+                if (distance.Length <= Monster.HitRange && !Player.InDash)
                 {
                     Player.Alive = false;
                 }
-                if (distance.Length <= Player.HitRange && Player.Attacing && Player.Direction.AngleBetwen(distance) < Math.PI / 4)
+                if (distance.Length <= Player.HitRange && 
+                    ((Player.Attacing && Player.Direction.AngleBetwen(distance) < Math.PI / 4) || (Player.InDash && distance.Length < Player.DashHitRange)))
                 {
                     monster.Alive = false;
+                    Player.AddExperience(100);
                 }
             }
         }
