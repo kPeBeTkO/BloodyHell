@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using BloodyHell.Entities;
 
 namespace BloodyHell
 {
@@ -60,7 +61,17 @@ namespace BloodyHell
                 if (directions.ContainsKey(args.KeyCode))
                     keysPressed.Add(args.KeyCode);
                 if (args.KeyCode == Keys.Escape)
+                {
                     game.Pause();
+                    if (game.curentState == GameState.Pause)
+                    {
+                        CreateButton();
+                    }
+                    else
+                    {
+                        Controls.Clear();
+                    }
+                }
             };
             MouseMove += (sender, args) => mouse = new Vector(args.Location) / game.CurentLevel.Map.ChunkSize;
             Paint += (sender, args) =>
@@ -77,6 +88,41 @@ namespace BloodyHell
                         DrawPause(args.Graphics);
                         break;
                 }
+            };
+        }
+
+        private void CreateButton()
+        {
+            var speed = new Button()
+            {
+                Location = new Point(50, 100),
+                Text = "Speed: " + game.CurentLevel.Player.State[Parameters.Speed].ToString(),
+                BackColor = Color.Blue
+            };
+            Controls.Add(speed);
+
+            var countDesh = new Button()
+            {
+                Location = new Point(150, 100),
+                Text = "Count Desh: " + game.CurentLevel.Player.State[Parameters.CountDesh].ToString(),
+                BackColor = Color.Blue
+            };
+            Controls.Add(countDesh);
+
+            speed.Click += (sender, args) =>
+            {
+                game.CurentLevel.Player.DistributeSkills(Parameters.Speed);
+                Controls.Clear();
+                Controls.Add(speed);
+                Controls.Add(countDesh);
+            };
+
+            countDesh.Click += (sender, args) =>
+            {
+                game.CurentLevel.Player.DistributeSkills(Parameters.CountDesh);
+                Controls.Clear();
+                Controls.Add(countDesh);
+                Controls.Add(speed);
             };
         }
 

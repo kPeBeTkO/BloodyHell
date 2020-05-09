@@ -8,7 +8,7 @@ using RayCasting;
 
 namespace BloodyHell.Entities
 {
-    public enum Parameters // добавть статы кроме скорости 
+    public enum Parameters
     {
         CountDesh,
         Level,
@@ -42,7 +42,11 @@ namespace BloodyHell.Entities
             Location = location;
             Velocity = Vector.Zero;
             Direction = new Vector(0, 1);
-            State[Parameters.Speed] = 0;
+
+            for (Parameters i = 0; i <= Parameters.skillPoints; i++)
+            {
+                State[i] = 0;
+            }
         }
 
         public Player(Dictionary<Parameters, int> playerState)
@@ -68,7 +72,7 @@ namespace BloodyHell.Entities
 
         public void DistributeSkills(Parameters state)
         {
-            switch(state) // сделать больше стат 
+            switch(state)
             {
                 case Parameters.Speed:
                     if (State[Parameters.skillPoints] > 0)
@@ -77,8 +81,14 @@ namespace BloodyHell.Entities
                         State[Parameters.skillPoints]--;
                     }
                     break;
+                case Parameters.CountDesh:
+                    if (State[Parameters.skillPoints] > 0)
+                    {
+                        State[Parameters.CountDesh] += 1;
+                        State[Parameters.skillPoints]--;
+                    }
+                    break;
                 default:
-                    // дописать
                     break;
             }
         }
