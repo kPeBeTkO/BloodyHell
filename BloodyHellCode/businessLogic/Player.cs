@@ -19,17 +19,18 @@ namespace BloodyHell.Entities
 
     public class Player : IEntity
     {
-        public Dictionary<Parameters, int> State;
-        public Vector Location { get; private set; }
-        public Vector Direction { get; private set; }
-        public Vector Velocity { get; private set; }
+        public const float HitRange = 2;
         public const float Size = 0.3f;
         public const float DefaultSpeed = 4;
         public const long HitCooldown = 200;
         public const long HitDuration = 150;
+        public Dictionary<Parameters, int> State;
+        public Vector Location { get; private set; }
+        public Vector Direction { get; private set; }
+        public Vector Velocity { get; private set; }
+        
         private long time = 0;
         private long lastHit = 0;
-
         public bool Attacing { get; private set; } = false;
         public bool Alive = true;
 
@@ -84,12 +85,16 @@ namespace BloodyHell.Entities
 
         public void SetVelosity(Vector userInput, Vector interest)
         {
+            if (!Alive)
+                return;
             Direction = (interest - Location).Normalize();
             Velocity = userInput.Rotate(Direction.Angle - Math.PI / 2) * CurentSpeed;
         }
 
         public void Attack()
         {
+            if (!Alive)
+                return;
             if (time - lastHit > HitDuration + HitCooldown)
             {
                 Attacing = true;
@@ -99,13 +104,13 @@ namespace BloodyHell.Entities
 
         public void MakeTurn(long timeElapsed, List<Square> walls)
         {
-            if (!Alive)
-                return;
             time += timeElapsed;
             if (time - lastHit > HitDuration)
             {
                 Attacing = false;
             }
+            if (!Alive)
+                return;
             if (walls == null || walls.Count == 0)
             {
                 Location += Velocity * (timeElapsed / 1000.0f);

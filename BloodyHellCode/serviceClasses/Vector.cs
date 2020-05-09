@@ -77,9 +77,15 @@ namespace RayCasting
 			return new Vector(a.X + b.X, a.Y + b.Y);
 		}
 
-		public float DistanceTo(Vector a)
+		public float AngleBetwen(Vector vector)
 		{
-			return (float)Math.Sqrt((X - a.X) * (X - a.X) + (Y - a.Y) * (Y - a.Y));
+			var angle = Math.Abs(Angle - vector.Angle);
+			return angle > Math.PI ? (float)(Math.PI * 2 - angle) : (float)angle;
+		}
+
+		public float DistanceTo(Vector vector)
+		{
+			return (float)Math.Sqrt((X - vector.X) * (X - vector.X) + (Y - vector.Y) * (Y - vector.Y));
 		}
 		public Vector Normalize()
 		{

@@ -57,30 +57,28 @@ namespace BloodyHell
 
         public void KillMonsterOrPlayer()
         {
-            Monsters = Monsters
-                .Where(monster =>
+            foreach(var monster in Monsters.Where(x => x.Alive))
+            {
+                var distance = monster.Location - Player.Location;
+                if (distance.Length <= Monster.HitRange)
                 {
-                    var line = Player.Location - monster.Location;
-                    return line.Length >= 2f || !Player.Attacing;
-                })
-                .ToList();
-
-            Player.Alive = Monsters
-                .All(monster =>
+                    Player.Alive = false;
+                }
+                if (distance.Length <= Player.HitRange && Player.Attacing && Player.Direction.AngleBetwen(distance) < Math.PI / 4)
                 {
-                    var line = Player.Location - monster.Location;
-                    return line.Length >= 1f;
-                });
+                    monster.Alive = false;
+                }
+            }
         }
 
         public void Update(long timeElapsed)
         {
             Player.MakeTurn(timeElapsed, Map.Walls);
-            KillMonsterOrPlayer();
             foreach (var monster in Monsters)
             {
                 monster.MakeTurn(timeElapsed, Player);
             }
+            KillMonsterOrPlayer();
         }
     }
 }
