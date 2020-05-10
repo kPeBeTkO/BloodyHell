@@ -188,7 +188,7 @@ namespace BloodyHell
             var chunkSize = level.Map.ChunkSize;
             var ray = new Ray(camera, 0);
             var brush = new TextureBrush(curentMapImage);
-            var pen = new Pen(brush);
+            var pen = new Pen(brush, width: 10);
             var HittedWalls = new HashSet<Square>();
 
             for (var i = 0; i < rayCount; i++)
