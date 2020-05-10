@@ -31,6 +31,12 @@ namespace BloodyHell
             Monsters = monsters;
         }
 
+        public void Restart()
+        {
+            Monsters = new List<Monster>();
+            LoadFromFile();
+        }
+
         public void LoadFromFile()
         {
             var file = new StreamReader("LevelData/" + LevelName + ".txt");
@@ -73,7 +79,7 @@ namespace BloodyHell
             }
         }
 
-        public void Update(long timeElapsed)
+        public bool Update(long timeElapsed)
         {
             Player.MakeTurn(timeElapsed, Map.Walls);
             foreach (var monster in Monsters)
@@ -81,6 +87,7 @@ namespace BloodyHell
                 monster.MakeTurn(timeElapsed, Player);
             }
             KillMonsterOrPlayer();
+            return Player.Location.DistanceTo(Exit) < 1;
         }
     }
 }

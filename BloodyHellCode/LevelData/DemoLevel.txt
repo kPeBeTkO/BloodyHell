@@ -1,6 +1,6 @@
 ﻿7
 Player 2 2
-Exit 18 28
+Exit 28 18
 Monster 2 5 1 4 10 7
 Monster 3 10 1 9 11 13
 Monster 22 6 16 4 29 9

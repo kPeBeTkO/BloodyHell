@@ -36,7 +36,7 @@ namespace BloodyHell
             {
                 curentLevelID = 0;
                 curentState = GameState.InGame;
-                watch.Start();
+                watch.Restart();
             }
             else
                 throw new Exception("Попытка начать игру вне меню");
@@ -59,12 +59,23 @@ namespace BloodyHell
             }
         }
 
-        public void Update()
+        public bool Update()
         {
             var curent = watch.ElapsedMilliseconds;
             frameTime = curent - lastFrame;
             lastFrame = curent;
-            CurentLevel.Update(frameTime);
+            var goToNextLevel = CurentLevel.Update(frameTime);
+            if (goToNextLevel)
+            {
+                watch.Restart();
+                if (curentLevelID < Levels.Count - 1)
+                    curentLevelID++;
+                else
+                    curentState = GameState.Menu;
+
+                CurentLevel.Update(frameTime);
+            }
+            return goToNextLevel;
         }
     }
 }

@@ -40,14 +40,17 @@ namespace BloodyHell
             Width = 1280;
             Height = 720;
             game = new GameModel(levelNames);
-            var timer = new Timer() { Interval = 20 };
+            var timer = new Timer() { Interval = 10 };
             timer.Start();
             timer.Tick += (sender, args) => 
             {
                 if (game.curentState == GameState.InGame)
                 {
                     game.CurentLevel.Player.SetVelosity(userInput, mouse);
-                    game.Update();
+                    if (game.Update())
+                    {
+                        curentMapImage = game.CurentLevel.Map.GetMapImage();
+                    }
                 }
                 Invalidate();
             };
@@ -110,10 +113,23 @@ namespace BloodyHell
             var countDesh = new Button()
             {
                 Location = new Point(150, 100),
-                Text = "Count Desh: " + game.CurentLevel.Player.State[Parameters.DashCount].ToString(),
+                Text = "Dashes: " + game.CurentLevel.Player.State[Parameters.DashCount].ToString(),
                 BackColor = Color.White
             };
             Controls.Add(countDesh);
+            var restart = new Button()
+            {
+                Location = new Point(250, 100),
+                Text = "Restart",
+                BackColor = Color.White
+            };
+            Controls.Add(restart);
+            restart.Click += (sender, args) =>
+            {
+                game.CurentLevel.Restart();
+                Controls.Clear();
+                game.Pause();
+            };
 
             speed.Click += (sender, args) =>
             {
@@ -122,21 +138,23 @@ namespace BloodyHell
                 Controls.Clear();
                 Controls.Add(speed);
                 Controls.Add(countDesh);
+                Controls.Add(restart);
             };
 
             countDesh.Click += (sender, args) =>
             {
                 game.CurentLevel.Player.DistributeSkills(Parameters.DashCount);
-                countDesh.Text = "Count Desh: " + game.CurentLevel.Player.State[Parameters.DashCount].ToString();
+                countDesh.Text = "Dashes: " + game.CurentLevel.Player.State[Parameters.DashCount].ToString();
                 Controls.Clear();
                 Controls.Add(countDesh);
                 Controls.Add(speed);
+                Controls.Add(restart);
             };
         }
 
         private void DrawPause(Graphics graphics)
         {
-            graphics.DrawString("Вы в павузе)", new Font("arial", 40), Brushes.White, 100, 100);
+            graphics.DrawString("Вы в павузе)", new Font("arial", 40), Brushes.White, 200, 20);
         }
         private void DrawMenu(Graphics graphics)
         {
@@ -158,6 +176,7 @@ namespace BloodyHell
         private void DrawGame(Graphics graphics)
         {
             DrawRayCast(graphics, game.CurentLevel, 500);
+            DrawExit(graphics, game.CurentLevel.Exit, game.CurentLevel.Map.ChunkSize);
             DrawPlayer(graphics, game.CurentLevel.Player, game.CurentLevel.Map.ChunkSize);
             DrawMonster(graphics, game.CurentLevel.Monsters, game.CurentLevel.Map.ChunkSize);
         }
@@ -187,6 +206,11 @@ namespace BloodyHell
                 if (square != null)
                     graphics.FillRectangle(brush, square.Location.X * chunkSize, square.Location.Y * chunkSize, chunkSize, chunkSize);
             }
+        }
+
+        private void DrawExit(Graphics graphics, Vector exit, int chunkSize)
+        {
+            graphics.FillRectangle(Brushes.GreenYellow, new Square(exit * chunkSize, chunkSize));
         }
 
         private void DrawPlayer(Graphics graphics, Player player, int chunkSize)
