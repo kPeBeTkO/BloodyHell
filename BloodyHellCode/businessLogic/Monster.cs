@@ -7,23 +7,20 @@ using RayCasting;
 
 namespace BloodyHell.Entities
 {
-    public class Monster : IEntity
+    public class Monster : Entity
     {
         public const float HitRange = 1;
         public const float Speed = 3;
         public const float ViewDistance = 3;
-        public Vector Location;
-        public Vector Velosity;
         public Vector Start;
         public Vector End;
         public bool IsTarget = false;
-        public bool Alive = true;
         
 
         public Monster(Vector vector, Vector start, Vector end)
         {
             Location = vector;
-            Velosity = new Vector(Speed, 0).Rotate(Math.PI / 4);
+            Velocity = new Vector(Speed, 0).Rotate(Math.PI / 4);
             Start = start;
             End = end;
         }
@@ -36,7 +33,7 @@ namespace BloodyHell.Entities
 
             if (linePlayer.Length <= ViewDistance && IsTarget)
             {
-                Velosity = linePlayer.Normalize() * Speed;
+                Velocity = linePlayer.Normalize() * Speed;
             }
         }
         public void CheckInsideBounds()
@@ -59,12 +56,12 @@ namespace BloodyHell.Entities
 
             CheckInsideBounds();
             if (!IsTarget && (Location.X > End.X || Location.X < Start.X))
-                Velosity = new Vector(-Velosity.X, Velosity.Y);
+                Velocity = new Vector(-Velocity.X, Velocity.Y);
 
             if (!IsTarget && (Location.Y > End.Y || Location.Y < Start.Y))
-                Velosity = new Vector(Velosity.X, -Velosity.Y);
+                Velocity = new Vector(Velocity.X, -Velocity.Y);
 
-            Location += Velosity * (timeElapsed / 1000.0f);
+            Location += Velocity * (timeElapsed / 1000.0f);
 
             GoToPlayer(player, timeElapsed);
         }

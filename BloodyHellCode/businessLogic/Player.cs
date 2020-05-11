@@ -8,7 +8,7 @@ using RayCasting;
 
 namespace BloodyHell.Entities
 {
-    public enum Parameters // добавть статы кроме скорости 
+    public enum Parameters
     {
         DashCount,
         Level,
@@ -17,7 +17,7 @@ namespace BloodyHell.Entities
         SkillPoints
     }
 
-    public class Player : IEntity
+    public class Player : Entity
     {
         public const float HitRange = 2;
         public const float Size = 0.3f;
@@ -29,9 +29,7 @@ namespace BloodyHell.Entities
         public const float DashHitRange = 1; 
 
         public Dictionary<Parameters, int> State;
-        public Vector Location { get; private set; }
         public Vector Direction { get; private set; }
-        public Vector Velocity { get; private set; }
         public bool InDash { get; private set; } = false;
         public int DashCount { get { return State[Parameters.DashCount]; } private set { State[Parameters.DashCount] = value; } }
         public bool Attacing { get; private set; } = false;
@@ -39,11 +37,10 @@ namespace BloodyHell.Entities
         private long time = 0;
         private long lastHit = 0;
         private long lastDash = 0;
-        public bool Alive = true;
 
         public float CurentSpeed { get { return DefaultSpeed * (1 + State[Parameters.Speed] * 0.2f); } }
 
-        public Player(Vector location)
+        public Player(Vector location) : base()
         {
             State = new Dictionary<Parameters, int>();
             Location = location;

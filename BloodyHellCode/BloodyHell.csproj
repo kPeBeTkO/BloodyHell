@@ -57,7 +57,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="businessLogic\GameModel.cs" />
-    <Compile Include="businessLogic\IEntity.cs" />
+    <Compile Include="businessLogic\Entity.cs" />
     <Compile Include="businessLogic\Level.cs" />
     <Compile Include="Drawing\TestForm.cs">
       <SubType>Form</SubType>

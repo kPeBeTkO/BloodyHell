@@ -13,7 +13,6 @@ namespace BloodyHell
     {
         public readonly string LevelName;
         public Map Map { get; private set; }
-        public List<IEntity> Entities;
         public Player Player { get; private set; }
         public Vector Exit { get; private set; }
         public List<Monster> Monsters;
