@@ -14,6 +14,8 @@ namespace BloodyHell
     {
         private GameModel game;
         private Bitmap curentMapImage;
+        private Bitmap playerImage;
+        private Bitmap monsterImage;
         private Vector mouse;
         private HashSet<Keys> keysPressed = new HashSet<Keys>();
         private Vector userInput
@@ -36,7 +38,8 @@ namespace BloodyHell
         public GameForm(List<string> levelNames)
         {
             DoubleBuffered = true;
-            
+            playerImage = new Bitmap("Textures/player.jpg");
+            monsterImage = new Bitmap("Textures/monster.png");
             Width = 1280;
             Height = 720;
             game = new GameModel(levelNames);
@@ -182,8 +185,8 @@ namespace BloodyHell
             graphics.ScaleTransform((float)Width / (20 * size), (float)Height / (height * size));
             DrawRayCast(graphics, game.CurentLevel, 500, 7);
             DrawExit(graphics, game.CurentLevel.Exit, size);
+            DrawMonster(graphics, game.CurentLevel.Monsters, size, 7);
             DrawPlayer(graphics, game.CurentLevel.Player, size);
-            DrawMonster(graphics, game.CurentLevel.Monsters, size);
         }
 
         private void DrawRayCast(Graphics graphics, Level level, int rayCount, float viewDistance)
@@ -193,54 +196,21 @@ namespace BloodyHell
             var chunkSize = level.Map.ChunkSize;
             var ray = new Ray(camera, 0);
             var brush = new TextureBrush(curentMapImage);
-            var pen = new Pen(brush, width: 3);
-            var HittedWalls = new HashSet<Square>();
+            var hittedWalls = new HashSet<Square>();
+            var points = new List<Vector>();
             for (var i = 0; i < rayCount; i++)
             {
                 var a = ray.FirstIntersectionOfRay(walls, viewDistance);
-                HittedWalls.Add(a.Item2);
+                hittedWalls.Add(a.Item2);
                 if (a.Item1 != null && camera.DistanceTo(a.Item1) < viewDistance)
-                    graphics.DrawLine(pen, camera * chunkSize, a.Item1 * chunkSize);
+                    points.Add(a.Item1 * chunkSize);
                 else
-                    graphics.DrawLine(pen, camera * chunkSize, (camera + ray.Direction * viewDistance) * chunkSize);
+                    points.Add((camera + ray.Direction * viewDistance) * chunkSize);
                 ray.Rotate(Math.PI * 2 / rayCount);
             }
-            foreach (var square in HittedWalls)
+            graphics.FillPolygon(brush, points.Select(x => x.ToPoint()).ToArray());
+            foreach (var square in hittedWalls)
             {
-                if (square != null)
-                    graphics.FillRectangle(brush, square.Location.X * chunkSize, square.Location.Y * chunkSize, chunkSize * 0.95f, chunkSize * 0.95f);
-            }
-        }
-
-        private void DrawRayCastUpdate(Graphics graphics, Level level, int rayCount)
-        {
-            var camera = level.Player.Location;
-            var walls = level.Map.Walls;
-            var chunkSize = level.Map.ChunkSize;
-            var ray = new Ray(camera, 0);
-            var brush = new TextureBrush(curentMapImage);
-            var pen = new Pen(brush, width: 4);
-            var WallsStarts = new Dictionary<Square, Vector>();
-            var WallsEnds = new Dictionary<Square, Vector>();
-
-            for (var i = 0; i < rayCount; i++)
-            {
-                var a = ray.FirstIntersectionOfRay(walls);
-                if (a.Item1 != null)
-                {
-                    if (!WallsStarts.ContainsKey(a.Item2))
-                    {
-                        WallsStarts[a.Item2] = a.Item1;
-                    }
-                    WallsEnds[a.Item2] = a.Item1;
-                }
-                if (a.Item1 == null)
-                    graphics.DrawLine(pen, camera * chunkSize, (camera + ray.Direction * 10) * chunkSize);
-                ray.Rotate(Math.PI * 2 / rayCount);
-            }
-            foreach (var square in WallsStarts.Keys)
-            {
-                graphics.FillPolygon(brush, new[] { (camera * chunkSize).ToPoint(), (WallsStarts[square] * chunkSize).ToPoint(), (WallsEnds[square] * chunkSize).ToPoint() });
                 if (square != null)
                     graphics.FillRectangle(brush, square.Location.X * chunkSize, square.Location.Y * chunkSize, chunkSize, chunkSize);
             }
@@ -251,24 +221,33 @@ namespace BloodyHell
             graphics.FillRectangle(Brushes.GreenYellow, new Square(exit * chunkSize, chunkSize));
         }
 
-        private void DrawPlayer(Graphics graphics, Player player, int chunkSize)
+        private void DrawPlayer(Graphics graphics, Player player, int size)
         {
             var camera = player.Location;
             if (player.Attacing)
             {
-                //graphics.DrawPie(Pens.Azure, (camera.X - 1) * chunkSize, (camera.Y - 1) * chunkSize, chunkSize * 2, chunkSize * 2, (float)player.Direction.Angle - (float)Math.PI / 4, (float)Math.PI / 2);
-                graphics.FillPie(Brushes.Red, (camera.X - 2) * chunkSize, (camera.Y - 2) * chunkSize, chunkSize * 4, chunkSize * 4, (float)(player.Direction.Angle * 180 / Math.PI - 45), 90);
+                graphics.FillPie(Brushes.Red, (camera.X - 2) * size, (camera.Y - 2) * size, size * 4, size * 4, (float)(player.Direction.Angle * 180 / Math.PI - 45), 90);
             }
-            graphics.FillEllipse(Brushes.Blue, (camera.X - 0.3f) * chunkSize, (camera.Y - 0.3f) * chunkSize, chunkSize * 0.6f, chunkSize * 0.6f);
-            graphics.DrawLine(Pens.Silver, camera * chunkSize, (camera + player.Direction) * chunkSize);
+            var height = Height / (float)Width * 20;
+            //как же тяжко вращать картинку :(
+            graphics.ResetTransform();
+            graphics.TranslateTransform(Width / 2, Height / 2);
+            graphics.RotateTransform((float)(player.Direction.Angle * 180 / Math.PI + 90 ));
+            graphics.ScaleTransform((float)Width / (20 * size) * Player.Size * 2, Height / (height * size) * Player.Size * 2);
+            graphics.DrawImage(playerImage, -playerImage.Width / 2, -playerImage.Height / 2);
+            graphics.ResetTransform();
         }
 
-        private void DrawMonster(Graphics graphics, List<Monster> monsters, int chunkSize)
+        private void DrawMonster(Graphics graphics, List<Monster> monsters, int chunkSize, float viewDistance)
         {
+            var camera = game.CurentLevel.Player.Location;
+            var walls = game.CurentLevel.Map.Walls;
             foreach (var monster in monsters)
             {
                 var location = monster.Location;
-                graphics.FillRectangle(Brushes.Gray, new RectangleF(location.X * chunkSize, location.Y * chunkSize, 0.5f * chunkSize, 0.5f * chunkSize));
+                var firstWall = new Ray(camera, location - camera).FirstIntersectionOfRay(walls, viewDistance).Item1;
+                if (firstWall != null && location.DistanceTo(camera) < firstWall.DistanceTo(camera) || firstWall == null && location.DistanceTo(camera) < viewDistance)
+                    graphics.DrawImage(monsterImage, (location.X - 0.5f) * chunkSize, (location.Y - 0.5f) * chunkSize);
             }
         }
     }

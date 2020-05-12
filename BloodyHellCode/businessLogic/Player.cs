@@ -20,7 +20,7 @@ namespace BloodyHell.Entities
     public class Player : Entity
     {
         public const float HitRange = 2;
-        public const float Size = 0.3f;
+        public const float Size = 0.4f;
         public const float DefaultSpeed = 4;
         public const long HitCooldown = 200;
         public const long HitDuration = 150;

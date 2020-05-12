@@ -18,6 +18,13 @@ namespace RayCasting
             Direction = new Vector(1, 0).Rotate(angle);
             
         }
+
+        public Ray(Vector pos, Vector direction)
+        {
+            Location = pos;
+            Direction = direction.Normalize();
+
+        }
         public Vector GetIntersectionPoint(Line line)
         {
             var x1 = Location.X; var y1 = Location.Y;

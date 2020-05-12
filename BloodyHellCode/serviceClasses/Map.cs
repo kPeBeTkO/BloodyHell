@@ -29,7 +29,7 @@ namespace BloodyHell
 
     public class Map
     {
-        public int ChunkSize = 32;
+        public int ChunkSize = 64;
         public int Width { get; private set; }
         public int Height { get; private set; }
         public MapChunk[,] Chunks;
