@@ -82,7 +82,7 @@ namespace BloodyHell
             {
                 game.CurentLevel.Player.Attack();
             };
-            MouseMove += (sender, args) => mouse = new Vector(args.Location) / game.CurentLevel.Map.ChunkSize;
+            MouseMove += (sender, args) => mouse = new Vector(args.Location) - new Vector(Width/2, Height/2);
             Paint += (sender, args) =>
             {
                 switch(game.curentState)
@@ -175,10 +175,17 @@ namespace BloodyHell
 
         private void DrawGame(Graphics graphics)
         {
-            DrawRayCast(graphics, game.CurentLevel, 500);
-            DrawExit(graphics, game.CurentLevel.Exit, game.CurentLevel.Map.ChunkSize);
-            DrawPlayer(graphics, game.CurentLevel.Player, game.CurentLevel.Map.ChunkSize);
-            DrawMonster(graphics, game.CurentLevel.Monsters, game.CurentLevel.Map.ChunkSize);
+            var size = game.CurentLevel.Map.ChunkSize;
+            var curentImage = new Bitmap(size * game.CurentLevel.Map.Width, size * game.CurentLevel.Map.Height);
+            var frameGraphics = Graphics.FromImage(curentImage);
+            DrawRayCast(frameGraphics, game.CurentLevel, 500);
+            DrawExit(frameGraphics, game.CurentLevel.Exit, size);
+            DrawPlayer(frameGraphics, game.CurentLevel.Player, size);
+            DrawMonster(frameGraphics, game.CurentLevel.Monsters, size);
+            var camera = game.CurentLevel.Player.Location;
+            var height = Height / (float)Width * 30;
+            var view = new RectangleF((camera.X - 15) * size, (camera.Y - height / 2) * size, 30 * size, height * size);
+            graphics.DrawImage(curentImage, new Rectangle(0,0,Width, Height), view, GraphicsUnit.Pixel);
         }
 
         private void DrawRayCast(Graphics graphics, Level level, int rayCount)
@@ -190,7 +197,6 @@ namespace BloodyHell
             var brush = new TextureBrush(curentMapImage);
             var pen = new Pen(brush, width: 10);
             var HittedWalls = new HashSet<Square>();
-
             for (var i = 0; i < rayCount; i++)
             {
                 var a = ray.FirstIntersectionOfRay(walls);
@@ -203,6 +209,40 @@ namespace BloodyHell
             }
             foreach (var square in HittedWalls)
             {
+                if (square != null)
+                    graphics.FillRectangle(brush, square.Location.X * chunkSize, square.Location.Y * chunkSize, chunkSize, chunkSize);
+            }
+        }
+
+        private void DrawRayCastUpdate(Graphics graphics, Level level, int rayCount)
+        {
+            var camera = level.Player.Location;
+            var walls = level.Map.Walls;
+            var chunkSize = level.Map.ChunkSize;
+            var ray = new Ray(camera, 0);
+            var brush = new TextureBrush(curentMapImage);
+            var pen = new Pen(brush, width: 4);
+            var WallsStarts = new Dictionary<Square, Vector>();
+            var WallsEnds = new Dictionary<Square, Vector>();
+
+            for (var i = 0; i < rayCount; i++)
+            {
+                var a = ray.FirstIntersectionOfRay(walls);
+                if (a.Item1 != null)
+                {
+                    if (!WallsStarts.ContainsKey(a.Item2))
+                    {
+                        WallsStarts[a.Item2] = a.Item1;
+                    }
+                    WallsEnds[a.Item2] = a.Item1;
+                }
+                if (a.Item1 == null)
+                    graphics.DrawLine(pen, camera * chunkSize, (camera + ray.Direction * 10) * chunkSize);
+                ray.Rotate(Math.PI * 2 / rayCount);
+            }
+            foreach (var square in WallsStarts.Keys)
+            {
+                graphics.FillPolygon(brush, new[] { (camera * chunkSize).ToPoint(), (WallsStarts[square] * chunkSize).ToPoint(), (WallsEnds[square] * chunkSize).ToPoint() });
                 if (square != null)
                     graphics.FillRectangle(brush, square.Location.X * chunkSize, square.Location.Y * chunkSize, chunkSize, chunkSize);
             }

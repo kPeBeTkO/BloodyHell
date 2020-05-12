@@ -31,19 +31,19 @@ namespace BloodyHell
     {
         public int ChunkSize = 32;
         public int Width { get; private set; }
-        public int Heigth { get; private set; }
+        public int Height { get; private set; }
         public MapChunk[,] Chunks;
         public List<Square> Walls;
         public Map(int width, int heigth)
         {
             Width = width;
-            Heigth = heigth;
+            Height = heigth;
             Chunks = new MapChunk[width, heigth];
             Walls = new List<Square>();
             var wall = new MapChunk(ChunkType.Wall, new Bitmap("Textures\\TestLevel\\stone.jpg"));
             var empty = new MapChunk(ChunkType.Wall, new Bitmap("Textures\\TestLevel\\grass.jpg"));
             var random = new Random();
-            for (var i = 0; i < Heigth; i++)
+            for (var i = 0; i < Height; i++)
                 for (var j = 0; j < Width; j++)
                 {
                     if (random.Next(0, 5) == 0)
@@ -81,10 +81,10 @@ namespace BloodyHell
 
             var size = file.ReadLine().Split().Select(x => int.Parse(x)).ToArray();
             Width = size[0];
-            Heigth = size[1];
-            Chunks = new MapChunk[Width, Heigth];
+            Height = size[1];
+            Chunks = new MapChunk[Width, Height];
 
-            for (var i = 0; i < Heigth; i++)
+            for (var i = 0; i < Height; i++)
             {
                 var line = file.ReadLine();
                 for (var j = 0; j < Width; j++)
@@ -98,9 +98,9 @@ namespace BloodyHell
 
         public Bitmap GetMapImage()
         {
-            var image = new Bitmap(Width * ChunkSize, Heigth * ChunkSize);
+            var image = new Bitmap(Width * ChunkSize, Height * ChunkSize);
             var graphics = Graphics.FromImage(image);
-            for (var i = 0; i < Heigth; i++)
+            for (var i = 0; i < Height; i++)
             {
                 for (var j = 0; j < Width; j++)
                 {

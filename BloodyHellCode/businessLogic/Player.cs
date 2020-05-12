@@ -94,7 +94,7 @@ namespace BloodyHell.Entities
         {
             if (!Alive)
                 return;
-            Direction = (interest - Location).Normalize();
+            Direction = interest.Normalize();
             if (!InDash)
                 Velocity = userInput.Rotate(Direction.Angle - Math.PI / 2) * CurentSpeed;
         }
