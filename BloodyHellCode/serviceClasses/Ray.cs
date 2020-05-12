@@ -51,6 +51,27 @@ namespace RayCasting
             Direction = Direction.Rotate(angle);
         }
 
+        public Tuple<Vector, Square> FirstIntersectionOfRay(List<Square> walls, float viewDistance)
+        {
+            if (walls.Count == 0)
+                return null;
+            Vector closestPoint = null;
+            Square closestWall = null;
+            foreach (var wall in walls)
+            {
+                if ((wall.Center - Location).Length > viewDistance)
+                    continue;
+                var point = GetIntersectionPoint(wall);
+                if (closestPoint == null ||
+                    (point != null && (point - Location).Length < (closestPoint - Location).Length))
+                {
+                    closestPoint = point;
+                    closestWall = wall;
+                }
+            }
+            return Tuple.Create(closestPoint, closestWall);
+        }
+
         public Tuple<Vector, Square> FirstIntersectionOfRay(List<Square> walls)
         {
             if (walls.Count == 0)
@@ -59,8 +80,6 @@ namespace RayCasting
             Square closestWall = null;
             foreach (var wall in walls)
             {
-                if ((wall.Center - Location).Length > 10)
-                    continue;
                 var point = GetIntersectionPoint(wall);
                 if (closestPoint == null ||
                     (point != null && (point - Location).Length < (closestPoint - Location).Length))

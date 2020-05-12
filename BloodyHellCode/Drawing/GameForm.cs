@@ -176,41 +176,39 @@ namespace BloodyHell
         private void DrawGame(Graphics graphics)
         {
             var size = game.CurentLevel.Map.ChunkSize;
-            var curentImage = new Bitmap(size * game.CurentLevel.Map.Width, size * game.CurentLevel.Map.Height);
-            var frameGraphics = Graphics.FromImage(curentImage);
-            DrawRayCast(frameGraphics, game.CurentLevel, 500);
-            DrawExit(frameGraphics, game.CurentLevel.Exit, size);
-            DrawPlayer(frameGraphics, game.CurentLevel.Player, size);
-            DrawMonster(frameGraphics, game.CurentLevel.Monsters, size);
             var camera = game.CurentLevel.Player.Location;
-            var height = Height / (float)Width * 30;
-            var view = new RectangleF((camera.X - 15) * size, (camera.Y - height / 2) * size, 30 * size, height * size);
-            graphics.DrawImage(curentImage, new Rectangle(0,0,Width, Height), view, GraphicsUnit.Pixel);
+            var height = Height / (float)Width * 20;
+            graphics.TranslateTransform(-(camera.X - 10) * (float)Width / 20, -(camera.Y - height / 2) * (float)Height / height);
+            graphics.ScaleTransform((float)Width / (20 * size), (float)Height / (height * size));
+            DrawRayCast(graphics, game.CurentLevel, 500, 7);
+            DrawExit(graphics, game.CurentLevel.Exit, size);
+            DrawPlayer(graphics, game.CurentLevel.Player, size);
+            DrawMonster(graphics, game.CurentLevel.Monsters, size);
         }
 
-        private void DrawRayCast(Graphics graphics, Level level, int rayCount)
+        private void DrawRayCast(Graphics graphics, Level level, int rayCount, float viewDistance)
         {
             var camera = level.Player.Location;
             var walls = level.Map.Walls;
             var chunkSize = level.Map.ChunkSize;
             var ray = new Ray(camera, 0);
             var brush = new TextureBrush(curentMapImage);
-            var pen = new Pen(brush, width: 10);
+            var pen = new Pen(brush, width: 3);
             var HittedWalls = new HashSet<Square>();
             for (var i = 0; i < rayCount; i++)
             {
-                var a = ray.FirstIntersectionOfRay(walls);
+                var a = ray.FirstIntersectionOfRay(walls, viewDistance);
                 HittedWalls.Add(a.Item2);
-                if (a.Item1 != null)
+                if (a.Item1 != null && camera.DistanceTo(a.Item1) < viewDistance)
                     graphics.DrawLine(pen, camera * chunkSize, a.Item1 * chunkSize);
                 else
-                    graphics.DrawLine(pen, camera * chunkSize, (camera + ray.Direction * 10) * chunkSize);
+                    graphics.DrawLine(pen, camera * chunkSize, (camera + ray.Direction * viewDistance) * chunkSize);
                 ray.Rotate(Math.PI * 2 / rayCount);
             }
             foreach (var square in HittedWalls)
             {
                 if (square != null)
-                    graphics.FillRectangle(brush, square.Location.X * chunkSize, square.Location.Y * chunkSize, chunkSize, chunkSize);
+                    graphics.FillRectangle(brush, square.Location.X * chunkSize, square.Location.Y * chunkSize, chunkSize * 0.95f, chunkSize * 0.95f);
             }
         }
 
