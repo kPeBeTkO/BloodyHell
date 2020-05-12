@@ -69,7 +69,11 @@ namespace BloodyHell
             {
                 watch.Restart();
                 if (curentLevelID < Levels.Count - 1)
+                {
+                    var playerStats = CurentLevel.Player.Stats;
                     curentLevelID++;
+                    CurentLevel.Player.Stats = playerStats;
+                }
                 else
                     curentState = GameState.Menu;
 

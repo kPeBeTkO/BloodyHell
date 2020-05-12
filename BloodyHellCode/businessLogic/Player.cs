@@ -28,64 +28,64 @@ namespace BloodyHell.Entities
         public const int DashSpeedMultiplayer = 7;
         public const float DashHitRange = 1; 
 
-        public Dictionary<Parameters, int> State;
+        public Dictionary<Parameters, int> Stats;
         public Vector Direction { get; private set; }
         public bool InDash { get; private set; } = false;
-        public int DashCount { get { return State[Parameters.DashCount]; } private set { State[Parameters.DashCount] = value; } }
+        public int DashCount { get { return Stats[Parameters.DashCount]; } private set { Stats[Parameters.DashCount] = value; } }
         public bool Attacing { get; private set; } = false;
 
         private long time = 0;
         private long lastHit = 0;
         private long lastDash = 0;
 
-        public float CurentSpeed { get { return DefaultSpeed * (1 + State[Parameters.Speed] * 0.2f); } }
+        public float CurentSpeed { get { return DefaultSpeed * (1 + Stats[Parameters.Speed] * 0.2f); } }
 
-        public Player(Vector location) : base()
+        public Player(Vector location)
         {
-            State = new Dictionary<Parameters, int>();
+            Stats = new Dictionary<Parameters, int>();
             Location = location;
             Velocity = Vector.Zero;
             Direction = new Vector(0, 1);
-            State[Parameters.Speed] = 0;
-            State[Parameters.SkillPoints] = 0;
-            State[Parameters.Experience] = 0;
-            State[Parameters.Level] = 0;
-            State[Parameters.DashCount] = 10;
+            Stats[Parameters.Speed] = 0;
+            Stats[Parameters.SkillPoints] = 0;
+            Stats[Parameters.Experience] = 0;
+            Stats[Parameters.Level] = 0;
+            Stats[Parameters.DashCount] = 10;
         }
 
         public Player(Dictionary<Parameters, int> playerState)
         {
-            this.State = playerState;
+            Stats = playerState;
         }
 
         public void AddExperience(int count)
         {
-            State[Parameters.Experience] += count;
-            if (State[Parameters.Experience] >= 100)
+            Stats[Parameters.Experience] += count;
+            if (Stats[Parameters.Experience] >= 100)
             {
                 LevelUp();
-                State[Parameters.Experience] -= 100;
+                Stats[Parameters.Experience] -= 100;
             }
         }
 
         public void LevelUp()
         {
-            State[Parameters.Level]++;
-            State[Parameters.SkillPoints]++;
+            Stats[Parameters.Level]++;
+            Stats[Parameters.SkillPoints]++;
         }
 
         public void DistributeSkills(Parameters state)
         {
-            if (State[Parameters.SkillPoints] > 0)
+            if (Stats[Parameters.SkillPoints] > 0)
                 switch (state)
                 {
                     case Parameters.Speed:
-                        State[Parameters.Speed] += 1;
-                        State[Parameters.SkillPoints]--;
+                        Stats[Parameters.Speed] += 1;
+                        Stats[Parameters.SkillPoints]--;
                         break;
                     case Parameters.DashCount:
-                        State[Parameters.DashCount] += 1;
-                        State[Parameters.SkillPoints]--;
+                        Stats[Parameters.DashCount] += 1;
+                        Stats[Parameters.SkillPoints]--;
                         break;
                 }
         }

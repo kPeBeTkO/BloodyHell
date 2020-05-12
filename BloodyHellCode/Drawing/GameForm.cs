@@ -108,7 +108,7 @@ namespace BloodyHell
             var speed = new Button()
             {
                 Location = new Point(50, 100),
-                Text = "Speed: " + game.CurentLevel.Player.State[Parameters.Speed].ToString(),
+                Text = "Speed: " + game.CurentLevel.Player.Stats[Parameters.Speed].ToString(),
                 BackColor = Color.White
             };
             Controls.Add(speed);
@@ -116,7 +116,7 @@ namespace BloodyHell
             var countDesh = new Button()
             {
                 Location = new Point(150, 100),
-                Text = "Dashes: " + game.CurentLevel.Player.State[Parameters.DashCount].ToString(),
+                Text = "Dashes: " + game.CurentLevel.Player.Stats[Parameters.DashCount].ToString(),
                 BackColor = Color.White
             };
             Controls.Add(countDesh);
@@ -137,7 +137,7 @@ namespace BloodyHell
             speed.Click += (sender, args) =>
             {
                 game.CurentLevel.Player.DistributeSkills(Parameters.Speed);
-                speed.Text = "Speed: " + game.CurentLevel.Player.State[Parameters.Speed].ToString();
+                speed.Text = "Speed: " + game.CurentLevel.Player.Stats[Parameters.Speed].ToString();
                 Controls.Clear();
                 Controls.Add(speed);
                 Controls.Add(countDesh);
@@ -147,7 +147,7 @@ namespace BloodyHell
             countDesh.Click += (sender, args) =>
             {
                 game.CurentLevel.Player.DistributeSkills(Parameters.DashCount);
-                countDesh.Text = "Dashes: " + game.CurentLevel.Player.State[Parameters.DashCount].ToString();
+                countDesh.Text = "Dashes: " + game.CurentLevel.Player.Stats[Parameters.DashCount].ToString();
                 Controls.Clear();
                 Controls.Add(countDesh);
                 Controls.Add(speed);
@@ -233,7 +233,7 @@ namespace BloodyHell
             graphics.ResetTransform();
             graphics.TranslateTransform(Width / 2, Height / 2);
             graphics.RotateTransform((float)(player.Direction.Angle * 180 / Math.PI + 90 ));
-            graphics.ScaleTransform((float)Width / (20 * size) * Player.Size * 2, Height / (height * size) * Player.Size * 2);
+            graphics.ScaleTransform((float)Width / (20 * size) * Player.Size * 2 * (float)size / playerImage.Width, Height / (height * size) * Player.Size * 2 * (float)size / playerImage.Height);
             graphics.DrawImage(playerImage, -playerImage.Width / 2, -playerImage.Height / 2);
             graphics.ResetTransform();
         }

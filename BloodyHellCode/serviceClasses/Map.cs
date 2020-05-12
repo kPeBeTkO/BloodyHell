@@ -29,7 +29,7 @@ namespace BloodyHell
 
     public class Map
     {
-        public int ChunkSize = 64;
+        public int ChunkSize = 0;
         public int Width { get; private set; }
         public int Height { get; private set; }
         public MapChunk[,] Chunks;
@@ -77,6 +77,8 @@ namespace BloodyHell
                 if (!Enum.TryParse(textureInfo[1], out  type))
                     throw new Exception();
                 textureDictionary[textureInfo[0][0]] = new MapChunk(type, new Bitmap(path + textureInfo[2]));
+                if (textureDictionary[textureInfo[0][0]].Texture.Width > ChunkSize)
+                    ChunkSize = textureDictionary[textureInfo[0][0]].Texture.Width;
             }
 
             var size = file.ReadLine().Split().Select(x => int.Parse(x)).ToArray();

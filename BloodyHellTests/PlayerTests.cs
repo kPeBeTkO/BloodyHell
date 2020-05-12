@@ -84,8 +84,8 @@ namespace BloodyHellTests
 
             player.DistributeSkills(Parameters.Speed);
 
-            Assert.AreEqual(player.State[Parameters.Speed], 6);
-            Assert.AreEqual(player.State[Parameters.SkillPoints], 1);
+            Assert.AreEqual(player.Stats[Parameters.Speed], 6);
+            Assert.AreEqual(player.Stats[Parameters.SkillPoints], 1);
         }
 
         [Test]
@@ -97,9 +97,9 @@ namespace BloodyHellTests
 
             player.AddExperience(30);
 
-            Assert.AreEqual(player.State[Parameters.Level], 1);
-            Assert.AreEqual(player.State[Parameters.Experience], 20);
-            Assert.AreEqual(player.State[Parameters.SkillPoints], 1);
+            Assert.AreEqual(player.Stats[Parameters.Level], 1);
+            Assert.AreEqual(player.Stats[Parameters.Experience], 20);
+            Assert.AreEqual(player.Stats[Parameters.SkillPoints], 1);
         }
     }
 }
