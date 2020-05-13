@@ -7,22 +7,24 @@ using RayCasting;
 
 namespace BloodyHell.Entities
 {
-    public class Monster : Entity
+    public class PongBot : Enemy
     {
-        public const float HitRange = 1;
         public const float Speed = 3;
         public const float ViewDistance = 3;
-        public Vector Start;
-        public Vector End;
+        private Vector start;
+        private Vector end;
         public bool IsTarget = false;
         
 
-        public Monster(Vector vector, Vector start, Vector end)
+        public PongBot(Vector vector, Vector start, Vector end)
         {
+            HitRange = 1;
+            Reward = 100;
+            Attackable = true;
             Location = vector;
             Velocity = new Vector(Speed, 0).Rotate(Math.PI / 4);
-            Start = start;
-            End = end;
+            this.start = start;
+            this.end = end;
         }
 
         public void GoToPlayer(Player player, long timeElapsed)
@@ -37,21 +39,21 @@ namespace BloodyHell.Entities
             }
         }
 
-        public void MakeTurn(long timeElapsed, Player player)
+        public override void MakeTurn(long timeElapsed, Player player, List<Square> walls)
         {
             if (!Alive)
                 return;
 
             var random = new Random();
-            float randEndX = random.Next((int)Start.X, (int)End.X) + (End.X - Start.X) / 2;
-            float randEndY = random.Next((int)Start.Y, (int)End.Y) + (End.Y - Start.Y) / 1.5f;
+            float randEndX = random.Next((int)start.X, (int)end.X) + (end.X - start.X) / 2;
+            float randEndY = random.Next((int)start.Y, (int)end.Y) + (end.Y - start.Y) / 1.5f;
 
-            IsTarget = !(Location.X >= randEndX || Location.X <= Start.X || Location.Y >= randEndY || Location.Y <= Start.Y);
+            IsTarget = !(Location.X >= randEndX || Location.X <= start.X || Location.Y >= randEndY || Location.Y <= start.Y);
 
-            if (!IsTarget && (Location.X >= randEndX || Location.X <= Start.X))
+            if (!IsTarget && (Location.X >= randEndX || Location.X <= start.X))
                 Velocity = new Vector(-Velocity.X, Velocity.Y);
 
-            if (!IsTarget && (Location.Y >= randEndY || Location.Y <= Start.Y))
+            if (!IsTarget && (Location.Y >= randEndY || Location.Y <= start.Y))
                 Velocity = new Vector(Velocity.X, -Velocity.Y);
 
             Location += Velocity * (timeElapsed / 1000.0f);

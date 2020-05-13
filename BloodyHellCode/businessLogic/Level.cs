@@ -15,24 +15,24 @@ namespace BloodyHell
         public Map Map { get; private set; }
         public Player Player { get; private set; }
         public Vector Exit { get; private set; }
-        public List<Monster> Monsters;
+        public List<Enemy> Enemies;
         public Level(string levelName)
         {
             LevelName = levelName;
-            Monsters = new List<Monster>();
+            Enemies = new List<Enemy>();
             LoadFromFile();
             Map = new Map(levelName);
         }
-        public Level(Map map, Player player, List<Monster> monsters)
+        public Level(Map map, Player player, List<Enemy> monsters)
         {
             Map = map;
             Player = player;
-            Monsters = monsters;
+            Enemies = monsters;
         }
 
         public void Restart()
         {
-            Monsters = new List<Monster>();
+            Enemies = new List<Enemy>();
             LoadFromFile();
         }
 
@@ -51,10 +51,14 @@ namespace BloodyHell
                     case "Exit":
                         Exit = new Vector(int.Parse(line[1]), int.Parse(line[2]));
                         break;
-                    case "Monster":
-                        Monsters.Add(new Monster(new Vector(int.Parse(line[1]), int.Parse(line[2])),
+                    case "PongBot":
+                        Enemies.Add(new PongBot(new Vector(int.Parse(line[1]), int.Parse(line[2])),
                                                  new Vector(int.Parse(line[3]), int.Parse(line[4])),
                                                  new Vector(int.Parse(line[5]), int.Parse(line[6]))));
+                        break;
+                    case "SawBot":
+                        Enemies.Add(new ChakramBot(new Vector(int.Parse(line[1]), int.Parse(line[2])),
+                                                 new Vector(int.Parse(line[3]), int.Parse(line[4]))));
                         break;
                 }
             }
@@ -62,18 +66,18 @@ namespace BloodyHell
 
         public void KillMonsterOrPlayer()
         {
-            foreach(var monster in Monsters.Where(x => x.Alive))
+            foreach(var enemy in Enemies.Where(x => x.Alive))
             {
-                var distance = monster.Location - Player.Location;
-                if (distance.Length <= Monster.HitRange && !Player.InDash)
+                var distance = enemy.Location - Player.Location;
+                if (distance.Length <= enemy.HitRange && !Player.InDash)
                 {
                     Player.Alive = false;
                 }
-                if (distance.Length <= Player.HitRange && 
+                if (enemy.Attackable && distance.Length <= Player.HitRange && 
                     ((Player.Attacing && Player.Direction.AngleBetwen(distance) < Math.PI / 4) || (Player.InDash && distance.Length < Player.DashHitRange)))
                 {
-                    monster.Alive = false;
-                    Player.AddExperience(100);
+                    enemy.Alive = false;
+                    Player.AddExperience(enemy.Reward);
                 }
             }
         }
@@ -81,9 +85,9 @@ namespace BloodyHell
         public bool Update(long timeElapsed)
         {
             Player.MakeTurn(timeElapsed, Map.Walls);
-            foreach (var monster in Monsters)
+            foreach (var enemy in Enemies)
             {
-                monster.MakeTurn(timeElapsed, Player);
+                enemy.MakeTurn(timeElapsed, Player, Map.Walls);
             }
             KillMonsterOrPlayer();
             return Player.Location.DistanceTo(Exit) < 1;

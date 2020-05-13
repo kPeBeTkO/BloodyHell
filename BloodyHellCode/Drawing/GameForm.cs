@@ -185,7 +185,7 @@ namespace BloodyHell
             graphics.ScaleTransform((float)Width / (20 * size), (float)Height / (height * size));
             DrawRayCast(graphics, game.CurentLevel, 500, 7);
             DrawExit(graphics, game.CurentLevel.Exit, size);
-            DrawMonster(graphics, game.CurentLevel.Monsters, size, 7);
+            DrawMonster(graphics, game.CurentLevel.Enemies, size, 7);
             DrawPlayer(graphics, game.CurentLevel.Player, size);
         }
 
@@ -238,7 +238,7 @@ namespace BloodyHell
             graphics.ResetTransform();
         }
 
-        private void DrawMonster(Graphics graphics, List<Monster> monsters, int chunkSize, float viewDistance)
+        private void DrawMonster(Graphics graphics, List<Enemy> monsters, int chunkSize, float viewDistance)
         {
             var camera = game.CurentLevel.Player.Location;
             var walls = game.CurentLevel.Map.Walls;
@@ -247,7 +247,10 @@ namespace BloodyHell
                 var location = monster.Location;
                 var firstWall = new Ray(camera, location - camera).FirstIntersectionOfRay(walls, viewDistance).Item1;
                 if (firstWall != null && location.DistanceTo(camera) < firstWall.DistanceTo(camera) || firstWall == null && location.DistanceTo(camera) < viewDistance)
+                {
                     graphics.DrawImage(monsterImage, (location.X - 0.5f) * chunkSize, (location.Y - 0.5f) * chunkSize);
+                    graphics.DrawEllipse(Pens.Red, (location.X - monster.HitRange) * chunkSize, (location.Y - monster.HitRange) * chunkSize, monster.HitRange * 2 * chunkSize, monster.HitRange * 2 * chunkSize);
+                }
             }
         }
     }

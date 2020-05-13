@@ -79,7 +79,7 @@ namespace BloodyHell
             {
                 args.Graphics.DrawString((1000.0 / frameTime).ToString(), new Font("arial", 10), Brushes.Red, 0, 0);
             };
-            Paint += (sender, args) => DrawMonster(args.Graphics, level.Monsters, level.Map.ChunkSize);
+            Paint += (sender, args) => DrawMonster(args.Graphics, level.Enemies, level.Map.ChunkSize);
         }
 
         private void DrawRayCast(Graphics graphics,  Level level, int rayCount)
@@ -122,7 +122,7 @@ namespace BloodyHell
             graphics.DrawLine(Pens.Silver, camera * chunkSize, (camera + player.Direction) * chunkSize);
         }
 
-        private void DrawMonster(Graphics graphics, List<Monster> monsters, int chunkSize)
+        private void DrawMonster(Graphics graphics, List<Enemy> monsters, int chunkSize)
         {
             foreach (var monster in monsters)
             {

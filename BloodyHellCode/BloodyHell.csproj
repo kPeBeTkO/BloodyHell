@@ -50,8 +50,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="businessLogic\Enemy.cs" />
+    <Compile Include="businessLogic\SawBot.cs" />
     <Compile Include="Drawing\DrawingExtentions.cs" />
-    <Compile Include="businessLogic\Monster.cs" />
+    <Compile Include="businessLogic\PongBot.cs" />
     <Compile Include="businessLogic\Player.cs" />
     <Compile Include="Drawing\GameForm.cs">
       <SubType>Form</SubType>

@@ -29,7 +29,7 @@ namespace BloodyHellTests
         [Test]
         public void ToBigX()
         {
-            var Monster = new Monster(new Vector(100, 3), new Vector(50, 3), new Vector(60, 3));
+            var Monster = new PongBot(new Vector(100, 3), new Vector(50, 3), new Vector(60, 3));
             var result = new Vector(-Monster.Velocity.X, Monster.Velocity.Y);
             var player = new Player(new Vector(0, 0));
             Monster.MakeTurn(10, player);
@@ -39,7 +39,7 @@ namespace BloodyHellTests
         [Test]
         public void ToSmallX()
         {
-            var Monster = new Monster(new Vector(10, 3), new Vector(50, 3), new Vector(60, 3));
+            var Monster = new PongBot(new Vector(10, 3), new Vector(50, 3), new Vector(60, 3));
             var result = new Vector(-Monster.Velocity.X, Monster.Velocity.Y);
             var player = new Player(new Vector(0, 0));
             Monster.MakeTurn(10, player);
@@ -49,7 +49,7 @@ namespace BloodyHellTests
         [Test]
         public void ToBigY()
         {
-            var Monster = new Monster(new Vector(3,100), new Vector(3,50), new Vector(3,60));
+            var Monster = new PongBot(new Vector(3,100), new Vector(3,50), new Vector(3,60));
             var result = new Vector(Monster.Velocity.X,-Monster.Velocity.Y);
             var player = new Player(new Vector(0, 0));
             Monster.MakeTurn(10, player);
@@ -59,7 +59,7 @@ namespace BloodyHellTests
         [Test]
         public void ToSmallY()
         {
-            var Monster = new Monster(new Vector(3,10), new Vector(3,50), new Vector(3,60));
+            var Monster = new PongBot(new Vector(3,10), new Vector(3,50), new Vector(3,60));
             var result = new Vector(Monster.Velocity.X,-Monster.Velocity.Y);
             var player = new Player(new Vector(0, 0));
             Monster.MakeTurn(10, player);

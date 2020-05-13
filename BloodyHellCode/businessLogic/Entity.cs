@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RayCasting;
 
-namespace BloodyHell
+namespace BloodyHell.Entities
 {
     public abstract class Entity
     {
