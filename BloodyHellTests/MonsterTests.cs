@@ -8,23 +8,23 @@ namespace BloodyHellTests
 {
     public class MonsterTests
     {
-        [Test]
-        public void OutsideBounce()
-        {
-            var monster = new Monster(new Vector(100, 1001), new Vector(3,1000), new Vector(120,0));
-            monster.IsTarget = true;
-            monster.CheckInsideBounds();
-            Assert.IsFalse(monster.IsTarget);
-        }
+        //[Test]
+        //public void OutsideBounce()
+        //{
+        //    var monster = new Monster(new Vector(100, 1001), new Vector(3,1000), new Vector(120,0));
+        //    monster.IsTarget = true;
+        //    monster.CheckInsideBounds();
+        //    Assert.IsFalse(monster.IsTarget);
+        //}
 
-        [Test]
-        public void InsideBounce()
-        {
-            var monster = new Monster(new Vector(4,95), new Vector(3,90), new Vector(5,100));
-            monster.IsTarget = true;
-            monster.CheckInsideBounds();
-            Assert.IsTrue(monster.IsTarget);
-        }
+        //[Test]
+        //public void InsideBounce()
+        //{
+        //    var monster = new Monster(new Vector(4,95), new Vector(3,90), new Vector(5,100));
+        //    monster.IsTarget = true;
+        //    monster.CheckInsideBounds();
+        //    Assert.IsTrue(monster.IsTarget);
+        //}
 
         [Test]
         public void ToBigX()

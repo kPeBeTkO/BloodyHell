@@ -36,29 +36,22 @@ namespace BloodyHell.Entities
                 Velocity = linePlayer.Normalize() * Speed;
             }
         }
-        public void CheckInsideBounds()
-        {
-            if (Location.X > End.X || Location.X < Start.X || Location.Y > End.Y || Location.Y < Start.Y)
-            {
-                IsTarget = false;
-            }
-            else
-            {
-                IsTarget = true;
-            }
-        }
 
         public void MakeTurn(long timeElapsed, Player player)
         {
             if (!Alive)
                 return;
-            var random = new Random();
 
-            CheckInsideBounds();
-            if (!IsTarget && (Location.X > End.X || Location.X < Start.X))
+            var random = new Random();
+            float randEndX = random.Next((int)Start.X, (int)End.X) + (End.X - Start.X) / 2;
+            float randEndY = random.Next((int)Start.Y, (int)End.Y) + (End.Y - Start.Y) / 1.5f;
+
+            IsTarget = !(Location.X >= randEndX || Location.X <= Start.X || Location.Y >= randEndY || Location.Y <= Start.Y);
+
+            if (!IsTarget && (Location.X >= randEndX || Location.X <= Start.X))
                 Velocity = new Vector(-Velocity.X, Velocity.Y);
 
-            if (!IsTarget && (Location.Y > End.Y || Location.Y < Start.Y))
+            if (!IsTarget && (Location.Y >= randEndY || Location.Y <= Start.Y))
                 Velocity = new Vector(Velocity.X, -Velocity.Y);
 
             Location += Velocity * (timeElapsed / 1000.0f);
