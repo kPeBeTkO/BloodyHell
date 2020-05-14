@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using BloodyHell.Entities;
+using System.Media;
 
 namespace BloodyHell
 {
@@ -57,6 +58,28 @@ namespace BloodyHell
                 }
                 Invalidate();
             };
+            SoundPlayer simpleSound = new SoundPlayer("Media/music.wav");
+            simpleSound.PlayLooping();
+            SetUserControls();
+            Paint += (sender, args) =>
+            {
+                switch(game.curentState)
+                {
+                    case GameState.Menu:
+                        DrawMenu(args.Graphics);
+                        break;
+                    case GameState.InGame:
+                        DrawGame(args.Graphics);
+                        break;
+                    case GameState.Pause:
+                        DrawPause(args.Graphics);
+                        break;
+                }
+            };
+        }
+
+        private void SetUserControls()
+        {
             KeyUp += (sender, args) =>
             {
                 if (directions.ContainsKey(args.KeyCode))
@@ -85,22 +108,7 @@ namespace BloodyHell
             {
                 game.CurentLevel.Player.Attack();
             };
-            MouseMove += (sender, args) => mouse = new Vector(args.Location) - new Vector(Width/2, Height/2);
-            Paint += (sender, args) =>
-            {
-                switch(game.curentState)
-                {
-                    case GameState.Menu:
-                        DrawMenu(args.Graphics);
-                        break;
-                    case GameState.InGame:
-                        DrawGame(args.Graphics);
-                        break;
-                    case GameState.Pause:
-                        DrawPause(args.Graphics);
-                        break;
-                }
-            };
+            MouseMove += (sender, args) => mouse = new Vector(args.Location) - new Vector(Width / 2, Height / 2);
         }
 
         private void CreateButton()

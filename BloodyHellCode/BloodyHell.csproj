@@ -51,7 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="businessLogic\Enemy.cs" />
-    <Compile Include="businessLogic\SawBot.cs" />
+    <Compile Include="businessLogic\ChakramBot.cs" />
     <Compile Include="Drawing\DrawingExtentions.cs" />
     <Compile Include="businessLogic\PongBot.cs" />
     <Compile Include="businessLogic\Player.cs" />
@@ -96,6 +96,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="LevelData\TestLevel.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Media\music.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Textures\DemoLevel\DemoLevel.txt">
