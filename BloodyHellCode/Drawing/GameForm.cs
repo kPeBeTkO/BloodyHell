@@ -15,8 +15,7 @@ namespace BloodyHell
     {
         private GameModel game;
         private Bitmap curentMapImage;
-        private Bitmap playerImage;
-        private Bitmap monsterImage;
+        private TextureHolder Textures = new TextureHolder();
         private Vector mouse;
         private HashSet<Keys> keysPressed = new HashSet<Keys>();
         private Vector userInput
@@ -39,8 +38,6 @@ namespace BloodyHell
         public GameForm(List<string> levelNames)
         {
             DoubleBuffered = true;
-            playerImage = new Bitmap("Textures/player.jpg");
-            monsterImage = new Bitmap("Textures/monster.png");
             Width = 1280;
             Height = 720;
             game = new GameModel(levelNames);
@@ -231,6 +228,7 @@ namespace BloodyHell
 
         private void DrawPlayer(Graphics graphics, Player player, int size)
         {
+            var playerImage = Textures.Player.Walk[0];
             var camera = player.Location;
             if (player.Attacing)
             {
@@ -256,7 +254,7 @@ namespace BloodyHell
                 var firstWall = new Ray(camera, location - camera).FirstIntersectionOfRay(walls, viewDistance).Item1;
                 if (firstWall != null && location.DistanceTo(camera) < firstWall.DistanceTo(camera) || firstWall == null && location.DistanceTo(camera) < viewDistance)
                 {
-                    graphics.DrawImage(monsterImage, (location.X - 0.5f) * chunkSize, (location.Y - 0.5f) * chunkSize);
+                    graphics.DrawImage(Textures.Enemies.PongBot[0], (location.X - 0.5f) * chunkSize, (location.Y - 0.5f) * chunkSize);
                     graphics.DrawEllipse(Pens.Red, (location.X - monster.HitRange) * chunkSize, (location.Y - monster.HitRange) * chunkSize, monster.HitRange * 2 * chunkSize, monster.HitRange * 2 * chunkSize);
                 }
             }
