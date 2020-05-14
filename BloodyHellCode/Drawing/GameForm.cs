@@ -228,6 +228,7 @@ namespace BloodyHell
 
         private void DrawPlayer(Graphics graphics, Player player, int size)
         {
+            //нужно будет сделать свитч по состояниям игрока, а потом и по спрайту
             var playerImage = Textures.Player.Walk[0];
             var camera = player.Location;
             if (player.Attacing)
@@ -254,10 +255,20 @@ namespace BloodyHell
                 var firstWall = new Ray(camera, location - camera).FirstIntersectionOfRay(walls, viewDistance).Item1;
                 if (firstWall != null && location.DistanceTo(camera) < firstWall.DistanceTo(camera) || firstWall == null && location.DistanceTo(camera) < viewDistance)
                 {
-                    graphics.DrawImage(Textures.Enemies.PongBot[0], (location.X - 0.5f) * chunkSize, (location.Y - 0.5f) * chunkSize);
+                    var image = GetEnemyImage(monster);
+                    graphics.DrawImage(image, (location.X - 0.5f) * chunkSize, (location.Y - 0.5f) * chunkSize);
                     graphics.DrawEllipse(Pens.Red, (location.X - monster.HitRange) * chunkSize, (location.Y - monster.HitRange) * chunkSize, monster.HitRange * 2 * chunkSize, monster.HitRange * 2 * chunkSize);
                 }
             }
+        }
+
+        private Bitmap GetEnemyImage(Enemy enemy)
+        {
+            if (enemy is ChakramBot)
+                return Textures.Enemies.ChakramBot[0];
+            if (enemy is PongBot)
+                return Textures.Enemies.PongBot[0];
+            return null;
         }
     }
 }
