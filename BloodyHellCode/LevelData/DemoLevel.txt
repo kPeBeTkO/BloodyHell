@@ -1,9 +1,9 @@
 ﻿8
 Player 2 2
 Exit 28 18
-PongBot 2 5 1 4 10 7
-PongBot 3 10 1 9 11 13
-PongBot 22 6 16 4 29 9
-PongBot 20 15 17 14 23 17
-PongBot 15 2 12 1 29 3
-SawBot 13 2 14 18
+PongBot 1 4 10 7
+PongBot 1 9 11 13
+PongBot 16 4 29 9
+PongBot 17 14 23 17
+PongBot 12 1 29 3
+ChakramBot 13 2 14 18

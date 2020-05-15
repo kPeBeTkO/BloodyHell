@@ -53,12 +53,11 @@ namespace BloodyHell
                         break;
                     case "PongBot":
                         Enemies.Add(new PongBot(new Vector(int.Parse(line[1]), int.Parse(line[2])),
-                                                 new Vector(int.Parse(line[3]), int.Parse(line[4])),
-                                                 new Vector(int.Parse(line[5]), int.Parse(line[6]))));
-                        break;
-                    case "SawBot":
-                        Enemies.Add(new ChakramBot(new Vector(int.Parse(line[1]), int.Parse(line[2])),
                                                  new Vector(int.Parse(line[3]), int.Parse(line[4]))));
+                        break;
+                    case "ChakramBot":
+                        Enemies.Add(new ChakramBot(new Vector(float.Parse(line[1]), float.Parse(line[2])),
+                                                 new Vector(float.Parse(line[3]), float.Parse(line[4]))));
                         break;
                 }
             }
