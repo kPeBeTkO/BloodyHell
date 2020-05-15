@@ -234,6 +234,7 @@ namespace BloodyHell
             if (player.Attacing)
             {
                 graphics.FillPie(Brushes.Red, (camera.X - 2) * size, (camera.Y - 2) * size, size * 4, size * 4, (float)(player.Direction.Angle * 180 / Math.PI - 45), 90);
+                playerImage = Textures.Player.Attack[0];
             }
             var height = Height / (float)Width * 20;
             //как же тяжко вращать картинку :(
@@ -257,7 +258,9 @@ namespace BloodyHell
                 {
                     var image = GetEnemyImage(monster);
                     graphics.DrawImage(image, (location.X - 0.5f) * chunkSize, (location.Y - 0.5f) * chunkSize);
-                    graphics.DrawEllipse(Pens.Red, (location.X - monster.HitRange) * chunkSize, (location.Y - monster.HitRange) * chunkSize, monster.HitRange * 2 * chunkSize, monster.HitRange * 2 * chunkSize);
+
+                    if (monster.Alive)
+                        graphics.DrawEllipse(Pens.Red, (location.X - monster.HitRange) * chunkSize, (location.Y - monster.HitRange) * chunkSize, monster.HitRange * 2 * chunkSize, monster.HitRange * 2 * chunkSize);
                 }
             }
         }
@@ -268,6 +271,9 @@ namespace BloodyHell
                 return Textures.Enemies.ChakramBot[0];
             if (enemy is PongBot)
             {
+                if (!enemy.Alive)
+                    return Textures.Enemies.PongBot[0];
+
                 var picture = Textures.Enemies.PongBot[enemy.countFrame];
 
                 enemy.countFrame++;
