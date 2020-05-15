@@ -48,6 +48,10 @@ namespace BloodyHell.Entities
                 return;
 
             var random = new Random();
+            var delta = 0.5f;
+
+            var locationTillEnd = new Vector(Location.X + delta, Location.Y + delta);
+            var locationTillStart = new Vector(Location.X - delta, Location.Y - delta);
 
             float randVelocityX = 0 < Velocity.X ? random.Next(0, (int)Velocity.X) : random.Next((int)Velocity.X, 0);
             float randVelocityY = 0 < Velocity.Y ? random.Next(0, (int)Velocity.Y) : random.Next((int)Velocity.Y, 0);
@@ -57,12 +61,13 @@ namespace BloodyHell.Entities
             else if (randVelocityX == 0)
                 randVelocityX += random.Next(-3, 2) + 0.5f;
 
-            IsTarget = !(Location.X >= end.X || Location.X <= start.X || Location.Y >= end.Y || Location.Y <= start.Y);
+            IsTarget = !(locationTillEnd.X >= end.X || locationTillStart.X <= start.X 
+                || locationTillEnd.Y >= end.Y || locationTillStart.Y <= start.Y);
 
-            if (!IsTarget && (Location.X >= end.X || Location.X <= start.X))
+            if (!IsTarget && (locationTillEnd.X >= end.X || locationTillStart.X <= start.X))
                 Velocity = new Vector(-Velocity.X, randVelocityY);
 
-            if (!IsTarget && (Location.Y >= end.Y || Location.Y <= start.Y))
+            if (!IsTarget && (locationTillEnd.Y >= end.Y || locationTillStart.Y <= start.Y))
                 Velocity = new Vector(randVelocityX, -Velocity.Y);
 
             Location += Velocity * (timeElapsed / 1000.0f);
