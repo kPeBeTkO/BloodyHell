@@ -13,5 +13,6 @@ namespace BloodyHell.Entities
         public bool Attackable { get; protected set; }
         public int Reward { get; protected set; }
         public abstract void MakeTurn(long timeElapsed, Player player, List<Square> walls);
+        public int countFrame { get; set; }
     }
 }

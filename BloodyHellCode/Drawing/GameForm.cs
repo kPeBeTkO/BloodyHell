@@ -267,7 +267,15 @@ namespace BloodyHell
             if (enemy is ChakramBot)
                 return Textures.Enemies.ChakramBot[0];
             if (enemy is PongBot)
-                return Textures.Enemies.PongBot[0];
+            {
+                var picture = Textures.Enemies.PongBot[enemy.countFrame];
+
+                enemy.countFrame++;
+                if (enemy.countFrame == 2)
+                    enemy.countFrame = 0;
+
+                return picture;
+            }
             return null;
         }
     }
