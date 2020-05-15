@@ -180,8 +180,11 @@
     <Content Include="Textures\Level1\Z.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Player\Walk\player.jpg">
+    <Content Include="Textures\Player\Attack\HeroAttack.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\Player\Walk\hero.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Textures\TestLevel\grass.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -197,7 +200,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Textures\Player\Attack\" />
     <Folder Include="Textures\Player\Dash\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
