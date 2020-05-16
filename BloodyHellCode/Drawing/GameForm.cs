@@ -317,7 +317,15 @@ namespace BloodyHell
         private Bitmap GetEnemyImage(Enemy enemy)
         {
             if (enemy is ChakramBot)
-                return Textures.Enemies.ChakramBot[0];
+            {
+                var picture = Textures.Enemies.ChakramBot[enemy.countFrame];
+
+                enemy.countFrame++;
+                if (enemy.countFrame == 4)
+                    enemy.countFrame = 0;
+
+                return picture;
+            }
             if (enemy is PongBot)
             {
                 if (!enemy.Alive)
