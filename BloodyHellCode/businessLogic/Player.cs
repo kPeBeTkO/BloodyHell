@@ -77,17 +77,18 @@ namespace BloodyHell.Entities
         public void DistributeSkills(Parameters state)
         {
             if (Stats[Parameters.SkillPoints] > 0)
+            {
                 switch (state)
                 {
                     case Parameters.Speed:
-                        Stats[Parameters.Speed] += 1;
-                        Stats[Parameters.SkillPoints]--;
+                        Stats[Parameters.Speed]++;
                         break;
                     case Parameters.DashCount:
-                        Stats[Parameters.DashCount] += 1;
-                        Stats[Parameters.SkillPoints]--;
+                        Stats[Parameters.DashCount]++;
                         break;
                 }
+                Stats[Parameters.SkillPoints]--;
+            }
         }
 
         public void SetVelosity(Vector userInput, Vector interest)

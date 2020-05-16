@@ -114,7 +114,8 @@ namespace BloodyHell
             {
                 Location = new Point(50, 100),
                 Text = "Speed: " + game.CurentLevel.Player.Stats[Parameters.Speed].ToString(),
-                BackColor = Color.White
+                BackColor = Color.White,
+                Width = 75
             };
             Controls.Add(speed);
 
@@ -122,16 +123,50 @@ namespace BloodyHell
             {
                 Location = new Point(150, 100),
                 Text = "Dashes: " + game.CurentLevel.Player.Stats[Parameters.DashCount].ToString(),
-                BackColor = Color.White
+                BackColor = Color.White,
+                Width = 75
             };
             Controls.Add(countDesh);
+
             var restart = new Button()
             {
                 Location = new Point(250, 100),
                 Text = "Restart",
-                BackColor = Color.White
+                BackColor = Color.White,
+                Width = 75
             };
             Controls.Add(restart);
+
+            var level = new Label()
+            {
+                Location = new Point(50, 150),
+                Text = "level: " + game.CurentLevel.Player.Stats[Parameters.Level].ToString(),
+                BackColor = Color.White,
+                Width = 75,
+                TextAlign = ContentAlignment.MiddleCenter
+            };
+            Controls.Add(level);
+
+            var skillPoints = new Label()
+            {
+                Location = new Point(50, 200),
+                Text = "skillPoints: " + game.CurentLevel.Player.Stats[Parameters.SkillPoints].ToString(),
+                BackColor = Color.White,
+                Width = 75,
+                TextAlign = ContentAlignment.MiddleCenter
+            };
+            Controls.Add(skillPoints);
+
+            var experience = new Label()
+            {
+                Location = new Point(50, 250),
+                Text = "experience: " + game.CurentLevel.Player.Stats[Parameters.Experience].ToString(),
+                BackColor = Color.White,
+                Width = 75,
+                TextAlign = ContentAlignment.MiddleCenter
+            };
+            Controls.Add(experience);
+
             restart.Click += (sender, args) =>
             {
                 game.CurentLevel.Restart();
@@ -142,27 +177,33 @@ namespace BloodyHell
             speed.Click += (sender, args) =>
             {
                 game.CurentLevel.Player.DistributeSkills(Parameters.Speed);
-                speed.Text = "Speed: " + game.CurentLevel.Player.Stats[Parameters.Speed].ToString();
+                speed.Text = "speed: " + game.CurentLevel.Player.Stats[Parameters.Speed].ToString();
                 Controls.Clear();
                 Controls.Add(speed);
                 Controls.Add(countDesh);
                 Controls.Add(restart);
+                Controls.Add(level);
+                Controls.Add(skillPoints);
+                Controls.Add(experience);
             };
 
             countDesh.Click += (sender, args) =>
             {
                 game.CurentLevel.Player.DistributeSkills(Parameters.DashCount);
-                countDesh.Text = "Dashes: " + game.CurentLevel.Player.Stats[Parameters.DashCount].ToString();
+                countDesh.Text = "dashes: " + game.CurentLevel.Player.Stats[Parameters.DashCount].ToString();
                 Controls.Clear();
                 Controls.Add(countDesh);
                 Controls.Add(speed);
                 Controls.Add(restart);
+                Controls.Add(level);
+                Controls.Add(skillPoints);
+                Controls.Add(experience);
             };
         }
 
         private void DrawPause(Graphics graphics)
         {
-            graphics.DrawString("Вы в павузе)", new Font("arial", 40), Brushes.White, 200, 20);
+            graphics.DrawString("Вы в павузе)", new Font("arial", 40), Brushes.White, 40, 20);
         }
         private void DrawMenu(Graphics graphics)
         {
