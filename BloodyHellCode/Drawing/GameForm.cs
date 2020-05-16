@@ -18,6 +18,9 @@ namespace BloodyHell
         private TextureHolder Textures = new TextureHolder();
         private Vector mouse;
         private HashSet<Keys> keysPressed = new HashSet<Keys>();
+        private Bitmap Menu;
+        private Bitmap Pause;
+        private Button start;
         private Vector userInput
         {
             get
@@ -37,6 +40,25 @@ namespace BloodyHell
         };
         public GameForm(List<string> levelNames)
         {
+            start = new Button()
+            {
+                Location = new Point(100, 100),
+                Text = "START",
+                Font = new Font("impact", 25),
+                Size = new Size(200, 50),
+                ForeColor = Color.DarkRed
+        };
+            start.Click += (sender, args) =>
+            {
+                game.Start();
+                Controls.Clear();
+                curentMapImage = game.CurentLevel.Map.GetMapImage();
+                BackColor = Color.Black;
+            };
+            Icon = new Icon("Textures/icon.ico");
+            Text = "Samurai Jurney";
+            Pause = new Bitmap("Textures/Pause.jpg");
+            Menu = new Bitmap("Textures/Menu.jpg");
             DoubleBuffered = true;
             Width = 1280;
             Height = 720;
@@ -56,7 +78,7 @@ namespace BloodyHell
                 Invalidate();
             };
             SoundPlayer simpleSound = new SoundPlayer("Media/music.wav");
-            //simpleSound.PlayLooping();
+            simpleSound.PlayLooping();
             SetUserControls();
             Paint += (sender, args) =>
             {
@@ -193,23 +215,15 @@ namespace BloodyHell
 
         private void DrawPause(Graphics graphics)
         {
+            graphics.DrawImage(Pause, 0, 0 , Width, Height);
             graphics.DrawString("Вы в павузе)", new Font("arial", 40), Brushes.White, 40, 20);
+
         }
         private void DrawMenu(Graphics graphics)
         {
-            var start = new Button()
-            {
-                Location = new Point(100, 100),
-                Text = "Start"
-            };
+            graphics.DrawImage(Menu, 0, 0, Width, Height);
+            start.Location = new Point(Width / 2 - 100, Height / 2 - 25);
             Controls.Add(start);
-            start.Click += (sender, args) => 
-            { 
-                game.Start();  
-                Controls.Clear(); 
-                curentMapImage = game.CurentLevel.Map.GetMapImage(); 
-                BackColor = Color.Black; 
-            };
         }
 
 
