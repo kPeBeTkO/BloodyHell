@@ -27,11 +27,13 @@ namespace BloodyHell
         public List<Bitmap> Walk;
         public List<Bitmap> Attack;
         public List<Bitmap> Dash;
+        public List<Bitmap> Dead;
         public PlayerTextureHolder()
         {
             Walk = TextureHolder.GetImageFromFolder("Textures/Player/Walk");
             Attack = TextureHolder.GetImageFromFolder("Textures/Player/Attack");
             Dash = TextureHolder.GetImageFromFolder("Textures/Player/Dash");
+            Dead = TextureHolder.GetImageFromFolder("Textures/Player/Dead");
         }
     }
 

@@ -260,7 +260,7 @@ namespace BloodyHell
         private void DrawPlayer(Graphics graphics, Player player, int size)
         {
             //нужно будет сделать свитч по состояниям игрока, а потом и по спрайту
-            var playerImage = Textures.Player.Walk[0];
+            var playerImage = Textures.Player.Walk[2];
             var camera = player.Location;
             if (player.Attacing)
             {
@@ -268,7 +268,22 @@ namespace BloodyHell
                 playerImage = Textures.Player.Attack[0];
             }
             else if (player.InDash)
+            {
                 playerImage = Textures.Player.Dash[0];
+            }
+            else if (player.InWalk)
+            {
+                playerImage = Textures.Player.Walk[player.countFrame];
+
+                player.countFrame++;
+                if (player.countFrame == 2)
+                    player.countFrame = 0;
+            }
+            else if (!player.Alive)
+            {
+                playerImage = Textures.Player.Dead[0];
+            }
+            
 
             var height = Height / (float)Width * 20;
             //как же тяжко вращать картинку :(

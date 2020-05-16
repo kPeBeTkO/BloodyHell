@@ -33,10 +33,12 @@ namespace BloodyHell.Entities
         public bool InDash { get; private set; } = false;
         public int DashCount { get { return Stats[Parameters.DashCount]; } private set { Stats[Parameters.DashCount] = value; } }
         public bool Attacing { get; private set; } = false;
+        public bool InWalk { get; private set; } = false;
 
         private long time = 0;
         private long lastHit = 0;
         private long lastDash = 0;
+        private long lastStep = 0;
 
         public float CurentSpeed { get { return DefaultSpeed * (1 + Stats[Parameters.Speed] * 0.2f); } }
 
@@ -157,14 +159,22 @@ namespace BloodyHell.Entities
         public void MakeTurn(long timeElapsed, List<Square> walls)
         {
             time += timeElapsed;
+
             if (time - lastHit > HitDuration)
             {
                 Attacing = false;
             }
+
             if (time - lastDash > DashDuration)
             {
                 InDash = false;
             }
+
+            if (Velocity.X != 0 && Velocity.Y != 0)
+                InWalk = true;
+            else
+                InWalk = false;
+
             if (!Alive)
                 return;
             Move(timeElapsed, walls);

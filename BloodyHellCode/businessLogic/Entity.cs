@@ -12,6 +12,6 @@ namespace BloodyHell.Entities
         public Vector Location { get; protected set; }
         public Vector Velocity { get; protected set; }
         public bool Alive = true;
-
+        public int countFrame = 0;
     }
 }
