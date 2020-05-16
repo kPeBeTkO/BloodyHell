@@ -56,7 +56,7 @@ namespace BloodyHell
                 Invalidate();
             };
             SoundPlayer simpleSound = new SoundPlayer("Media/music.wav");
-            simpleSound.PlayLooping();
+            //simpleSound.PlayLooping();
             SetUserControls();
             Paint += (sender, args) =>
             {
@@ -230,7 +230,7 @@ namespace BloodyHell
             graphics.TranslateTransform(-(camera.X - 10) * (float)Width / 20, -(camera.Y - height / 2) * (float)Height / height);
             graphics.ScaleTransform((float)Width / (20 * size), (float)Height / (height * size));
             DrawRayCast(graphics, game.CurentLevel, 500, 7);
-            DrawExit(graphics, game.CurentLevel.Exit, size);
+            //DrawExit(graphics, game.CurentLevel.Exit, size);
             DrawMonster(graphics, game.CurentLevel.Enemies, size, 7);
             DrawPlayer(graphics, game.CurentLevel.Player, size);
         }

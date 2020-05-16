@@ -16,15 +16,15 @@ namespace BloodyHell.Entities
         public bool IsTarget = false;
         
 
-        public PongBot(Vector vector, Vector start, Vector end)
+        public PongBot( Vector start, Vector end)
         {
             var random = new Random();
 
             HitRange = 1;
             Reward = 100;
             Attackable = true;
-            Location = vector;
-            Velocity = new Vector(Speed, 0).Rotate(Math.PI / random.Next(0, 6));
+            Location = new Vector(random.Next((int)start.X, (int)end.X - 2) + 0.6f, random.Next((int)start.Y, (int)end.Y - 2) + 0.6f);
+            Velocity = new Vector(Speed, 0).Rotate(Math.PI * 2 * random.Next(0, 100) / 100);
             this.start = start;
             this.end = end;
         }
@@ -52,7 +52,7 @@ namespace BloodyHell.Entities
 
             var locationTillEnd = new Vector(Location.X + delta, Location.Y + delta);
             var locationTillStart = new Vector(Location.X - delta, Location.Y - delta);
-
+            //какая то залупа получилась если честно
             float randVelocityX = 0 < Velocity.X ? random.Next(0, (int)Velocity.X) : random.Next((int)Velocity.X, 0);
             float randVelocityY = 0 < Velocity.Y ? random.Next(0, (int)Velocity.Y) : random.Next((int)Velocity.Y, 0);
 

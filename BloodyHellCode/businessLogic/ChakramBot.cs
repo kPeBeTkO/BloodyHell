@@ -17,10 +17,10 @@ namespace BloodyHell.Entities
         {
             Attackable = false;
             HitRange = 1.5f;
-            this.start = start;
-            this.end = end;
-            Location = start;
-            Velocity = (end - start).Normalize() * speed;
+            this.start = start + new Vector(0.5f, 0.5f);
+            this.end = end + new Vector(0.5f, 0.5f);
+            Location = this.start;
+            Velocity = (this.end - this.start).Normalize() * speed;
         }
 
         public override void MakeTurn(long timeElapsed, Player player, List<Square> walls)

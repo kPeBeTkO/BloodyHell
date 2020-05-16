@@ -1,0 +1,14 @@
+13
+Player 20 15
+PongBot 6 6 15 12
+PongBot 22 6 30 12
+PongBot 26 8 34 12
+PongBot 29 21 34 25
+PongBot 11 13 18 20
+PongBot 11 23 18 29
+ChakramBot 3 3 36 3
+ChakramBot 18 3 18 15
+ChakramBot 3 15 37 15
+ChakramBot 3 3 3 27
+ChakramBot 8 21 18 21
+Exit 22 21
