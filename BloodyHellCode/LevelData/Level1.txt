@@ -10,5 +10,5 @@ ChakramBot 3 3 36 3
 ChakramBot 18 3 18 15
 ChakramBot 3 15 37 15
 ChakramBot 3 3 3 27
-ChakramBot 8 21,5 18 21,5
+ChakramBot 8 21 18 21
 Exit 22 21
