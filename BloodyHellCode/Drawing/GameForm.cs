@@ -179,12 +179,7 @@ namespace BloodyHell
                 game.CurentLevel.Player.DistributeSkills(Parameters.Speed);
                 speed.Text = "speed: " + game.CurentLevel.Player.Stats[Parameters.Speed].ToString();
                 Controls.Clear();
-                Controls.Add(speed);
-                Controls.Add(countDesh);
-                Controls.Add(restart);
-                Controls.Add(level);
-                Controls.Add(skillPoints);
-                Controls.Add(experience);
+                CreateButton();
             };
 
             countDesh.Click += (sender, args) =>
@@ -192,12 +187,7 @@ namespace BloodyHell
                 game.CurentLevel.Player.DistributeSkills(Parameters.DashCount);
                 countDesh.Text = "dashes: " + game.CurentLevel.Player.Stats[Parameters.DashCount].ToString();
                 Controls.Clear();
-                Controls.Add(countDesh);
-                Controls.Add(speed);
-                Controls.Add(restart);
-                Controls.Add(level);
-                Controls.Add(skillPoints);
-                Controls.Add(experience);
+                CreateButton();
             };
         }
 
@@ -313,7 +303,7 @@ namespace BloodyHell
             if (enemy is PongBot)
             {
                 if (!enemy.Alive)
-                    return Textures.Enemies.PongBot[0];
+                    return Textures.Enemies.PongBot[2];
 
                 var picture = Textures.Enemies.PongBot[enemy.countFrame];
 
