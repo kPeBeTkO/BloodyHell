@@ -170,7 +170,7 @@ namespace BloodyHell.Entities
                 InDash = false;
             }
 
-            if (Velocity.X != 0 && Velocity.Y != 0)
+            if (Velocity.X != 0 || Velocity.Y != 0)
                 InWalk = true;
             else
                 InWalk = false;

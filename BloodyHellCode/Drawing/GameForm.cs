@@ -326,6 +326,7 @@ namespace BloodyHell
 
                 return picture;
             }
+
             if (enemy is PongBot)
             {
                 if (!enemy.Alive)

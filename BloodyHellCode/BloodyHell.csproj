@@ -270,13 +270,13 @@
     <Content Include="Textures\Player\Dead\PlayerIsDead.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Player\Walk\hero.png">
+    <Content Include="Textures\Player\Walk\0PlayerRightStep.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Player\Walk\PlayerLeftStep.png">
+    <Content Include="Textures\Player\Walk\1PlayerLeftStep.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Textures\Player\Walk\PlayerRightStep.png">
+    <Content Include="Textures\Player\Walk\2hero.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Textures\TestLevel\grass.jpg">
