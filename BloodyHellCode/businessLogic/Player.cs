@@ -55,7 +55,7 @@ namespace BloodyHell.Entities
             Stats[Parameters.SkillPoints] = 0;
             Stats[Parameters.Experience] = 0;
             Stats[Parameters.Level] = 0;
-            Stats[Parameters.DashCount] = 10;
+            Stats[Parameters.DashCount] = 3;
             DashCount = Stats[Parameters.DashCount];
         }
 

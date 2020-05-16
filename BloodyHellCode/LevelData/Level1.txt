@@ -1,6 +1,5 @@
-13
-Player 20 15
-PongBot 6 6 15 12
+12
+Player 8 9
 PongBot 22 6 30 12
 PongBot 26 8 34 12
 PongBot 29 21 34 25
