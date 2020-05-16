@@ -267,6 +267,9 @@ namespace BloodyHell
                 graphics.FillPie(Brushes.Red, (camera.X - 2) * size, (camera.Y - 2) * size, size * 4, size * 4, (float)(player.Direction.Angle * 180 / Math.PI - 45), 90);
                 playerImage = Textures.Player.Attack[0];
             }
+            else if (player.InDash)
+                playerImage = Textures.Player.Dash[0];
+
             var height = Height / (float)Width * 20;
             //как же тяжко вращать картинку :(
             graphics.ResetTransform();
