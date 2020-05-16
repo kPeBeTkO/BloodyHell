@@ -212,6 +212,8 @@ namespace BloodyHell
             };
         }
 
+
+
         private void DrawGame(Graphics graphics)
         {
             var size = game.CurentLevel.Map.ChunkSize;
@@ -220,9 +222,24 @@ namespace BloodyHell
             graphics.TranslateTransform(-(camera.X - 10) * (float)Width / 20, -(camera.Y - height / 2) * (float)Height / height);
             graphics.ScaleTransform((float)Width / (20 * size), (float)Height / (height * size));
             DrawRayCast(graphics, game.CurentLevel, 500, 7);
-            //DrawExit(graphics, game.CurentLevel.Exit, size);
             DrawMonster(graphics, game.CurentLevel.Enemies, size, 7);
             DrawPlayer(graphics, game.CurentLevel.Player, size);
+            DrawGUI(graphics, game.CurentLevel.Player);
+        }
+
+        private void DrawGUI(Graphics graphics, Player player)
+        {
+            if (player.Alive)
+            {
+                graphics.DrawString(player.DashCount.ToString(), new Font("impact", 25), Brushes.White, 40, 0);
+                graphics.DrawEllipse(Pens.White, 0, 0, 40, 40);
+                graphics.FillPie(Brushes.White, 0, 0, 40, 40, -90, 360 * (player.Time - player.LastDashReload) / (float)Player.DashCouldown);
+            }
+            else
+            {
+                graphics.DrawString("DEAD", new Font("impact", 100), Brushes.Black, Width / 2 - 195, Height / 2 - 98);
+                graphics.DrawString("DEAD", new Font("impact", 100), Brushes.DarkRed, Width / 2 - 200, Height /2 - 100);
+            }
         }
 
         private void DrawRayCast(Graphics graphics, Level level, int rayCount, float viewDistance)
@@ -250,11 +267,6 @@ namespace BloodyHell
                 if (square != null)
                     graphics.FillRectangle(brush, square.Location.X * chunkSize, square.Location.Y * chunkSize, chunkSize, chunkSize);
             }
-        }
-
-        private void DrawExit(Graphics graphics, Vector exit, int chunkSize)
-        {
-            graphics.FillRectangle(Brushes.GreenYellow, new Square(exit * chunkSize, chunkSize));
         }
 
         private void DrawPlayer(Graphics graphics, Player player, int size)

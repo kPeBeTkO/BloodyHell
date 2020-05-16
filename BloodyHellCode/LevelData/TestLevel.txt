@@ -1,6 +1,6 @@
-﻿2
-Player 5 5
+﻿3
+Player 7 7
 Exit 9 9
-Monster 2 3 1 1 8 8
+PongBot 1 1 5 5
 Monster 8 7 1 1 8 8
 Monster 2 7 1 1 8 8

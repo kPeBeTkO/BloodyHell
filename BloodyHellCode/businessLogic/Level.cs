@@ -16,6 +16,8 @@ namespace BloodyHell
         public Player Player { get; private set; }
         public Vector Exit { get; private set; }
         public List<Enemy> Enemies;
+        private Random random = new Random();
+        public Dictionary<Parameters, int> InitialStats = new Dictionary<Parameters, int>();
         public Level(string levelName)
         {
             LevelName = levelName;
@@ -34,6 +36,10 @@ namespace BloodyHell
         {
             Enemies = new List<Enemy>();
             LoadFromFile();
+            foreach (var parametr in InitialStats.Keys)
+            {
+                Player.Stats[parametr] = InitialStats[parametr];
+            }
         }
 
         public void LoadFromFile()
@@ -76,7 +82,7 @@ namespace BloodyHell
                     ((Player.Attacing && Player.Direction.AngleBetwen(distance) < Math.PI / 4) || (Player.InDash && distance.Length < Player.DashHitRange)))
                 {
                     enemy.Alive = false;
-                    Player.AddExperience(enemy.Reward);
+                    Player.AddExperience((int)Math.Round(enemy.Reward * (1 + (random.NextDouble() - 0.5) / 4)));
                 }
             }
         }
@@ -89,7 +95,7 @@ namespace BloodyHell
                 enemy.MakeTurn(timeElapsed, Player, Map.Walls);
             }
             KillMonsterOrPlayer();
-            return Player.Location.DistanceTo(Exit) < 1;
+            return Player.Location.DistanceTo(Exit + new Vector(0.5f, 0.5f)) < 0.5f;
         }
     }
 }

@@ -67,17 +67,24 @@ namespace BloodyHell
             var goToNextLevel = CurentLevel.Update(frameTime);
             if (goToNextLevel)
             {
-                watch.Restart();
                 if (curentLevelID < Levels.Count - 1)
                 {
                     var playerStats = CurentLevel.Player.Stats;
                     curentLevelID++;
                     CurentLevel.Player.Stats = playerStats;
+                    foreach (var parametr in playerStats.Keys)
+                    {
+                        CurentLevel.InitialStats[parametr] = playerStats[parametr];
+                    }
+                    watch.Restart();
                 }
                 else
+                {
                     curentState = GameState.Menu;
-
-                CurentLevel.Update(frameTime);
+                    foreach (var level in Levels)
+                        level.LoadFromFile();
+                }
+                lastFrame = 0;
             }
             return goToNextLevel;
         }

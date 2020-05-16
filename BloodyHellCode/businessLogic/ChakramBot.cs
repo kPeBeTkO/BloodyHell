@@ -25,15 +25,20 @@ namespace BloodyHell.Entities
 
         public override void MakeTurn(long timeElapsed, Player player, List<Square> walls)
         {
-            if (Location >= end)
+            var de = end - Location;
+            var ds = start - Location;
+            if ((de + ds).Length > start.DistanceTo(end))
             {
-                Location = end;
-                Velocity = (start - end).Normalize() * speed;
-            }
-            else if (Location <= start)
-            {
-                Location = start;
-                Velocity = (end - start).Normalize() * speed;
+                if (de.Length <= ds.Length)
+                {
+                    Location = end;
+                    Velocity = (start - end).Normalize() * speed;
+                }
+                else if (de.Length >= ds.Length)
+                {
+                    Location = start;
+                    Velocity = (end - start).Normalize() * speed;
+                }
             }
             Location += Velocity * (timeElapsed / 1000f);
         }

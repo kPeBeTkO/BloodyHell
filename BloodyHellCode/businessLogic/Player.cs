@@ -20,6 +20,7 @@ namespace BloodyHell.Entities
     public class Player : Entity
     {
         public const float HitRange = 2;
+        public const float DashCouldown = 5000;
         public const float Size = 0.4f;
         public const float DefaultSpeed = 4;
         public const long HitCooldown = 200;
@@ -31,14 +32,16 @@ namespace BloodyHell.Entities
         public Dictionary<Parameters, int> Stats;
         public Vector Direction { get; private set; }
         public bool InDash { get; private set; } = false;
-        public int DashCount { get { return Stats[Parameters.DashCount]; } private set { Stats[Parameters.DashCount] = value; } }
+        public int DashCount { get; private set; }
         public bool Attacing { get; private set; } = false;
         public bool InWalk { get; private set; } = false;
+        public long LastDashReload { get; private set; } = 0;
 
-        private long time = 0;
+        public long Time { get; private set; } = 0;
         private long lastHit = 0;
         private long lastDash = 0;
         private long lastStep = 0;
+        
 
         public float CurentSpeed { get { return DefaultSpeed * (1 + Stats[Parameters.Speed] * 0.2f); } }
 
@@ -53,6 +56,7 @@ namespace BloodyHell.Entities
             Stats[Parameters.Experience] = 0;
             Stats[Parameters.Level] = 0;
             Stats[Parameters.DashCount] = 10;
+            DashCount = Stats[Parameters.DashCount];
         }
 
         public Player(Dictionary<Parameters, int> playerState)
@@ -106,20 +110,20 @@ namespace BloodyHell.Entities
         {
             if (!Alive)
                 return;
-            if (time - lastHit > HitDuration + HitCooldown)
+            if (Time - lastHit > HitDuration + HitCooldown)
             {
                 Attacing = true;
-                lastHit = time;
+                lastHit = Time;
             }
         }
 
         public void Dash()
         {
-            if (DashCount <= 0)
+            if (DashCount <= 0 || !Alive)
                 return;
             DashCount--;
             InDash = true;
-            lastDash = time;
+            lastDash = Time;
             Velocity = Direction * CurentSpeed * DashSpeedMultiplayer;
         }
 
@@ -158,22 +162,26 @@ namespace BloodyHell.Entities
 
         public void MakeTurn(long timeElapsed, List<Square> walls)
         {
-            time += timeElapsed;
+            Time += timeElapsed;
 
-            if (time - lastHit > HitDuration)
-            {
+            if (Time - lastHit > HitDuration)
                 Attacing = false;
-            }
 
-            if (time - lastDash > DashDuration)
-            {
+            if (Time - lastDash > DashDuration)
                 InDash = false;
-            }
 
             if (Alive && (Velocity.X != 0 || Velocity.Y != 0))
                 InWalk = true;
             else
                 InWalk = false;
+
+            if (DashCount < Stats[Parameters.DashCount] && Time - LastDashReload > DashCouldown)
+            {
+                DashCount++;
+                LastDashReload = Time;
+            }
+            else if (DashCount == Stats[Parameters.DashCount])
+                LastDashReload = Time;
 
             if (!Alive)
                 return;

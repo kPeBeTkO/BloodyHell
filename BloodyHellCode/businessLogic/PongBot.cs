@@ -9,22 +9,21 @@ namespace BloodyHell.Entities
 {
     public class PongBot : Enemy
     {
+        public const float Size = 0.5f;
         public const float Speed = 3;
         public const float ViewDistance = 3;
         private Vector start;
         private Vector end;
-        public bool IsTarget = false;
-        
+        public bool PlayerInBounds = false;
+        private Random random = new Random();
 
         public PongBot( Vector start, Vector end)
         {
-            var random = new Random();
-
             HitRange = 1;
-            Reward = 100;
+            Reward = 33;
             Attackable = true;
-            Location = new Vector(random.Next((int)start.X, (int)end.X - 2) + 0.6f, random.Next((int)start.Y, (int)end.Y - 2) + 0.6f);
-            Velocity = new Vector(Speed, 0).Rotate(Math.PI * 2 * random.Next(0, 100) / 100);
+            Location = new Vector(random.Next((int)start.X, (int)end.X) + 0.5f, random.Next((int)start.Y, (int)end.Y) + 0.5f);
+            Velocity = new Vector(Speed, 0).Rotate(Math.PI / 2 * random.Next(0, 4) + Math.PI / 4);
             this.start = start;
             this.end = end;
         }
@@ -36,9 +35,14 @@ namespace BloodyHell.Entities
 
             var linePlayer = player.Location - Location;
 
-            if (linePlayer.Length <= ViewDistance && IsTarget)
+            if (linePlayer.Length <= ViewDistance && PlayerInBounds)
             {
                 Velocity = linePlayer.Normalize() * Speed;
+            }
+            else if (Math.Abs(Math.Abs(Velocity.X) - Math.Abs(Velocity.Y)) > 0.01)
+            {
+
+                Velocity = new Vector(Speed, 0).Rotate(Math.PI / 2 * random.Next(0, 4) + Math.PI / 4);
             }
         }
 
@@ -46,33 +50,14 @@ namespace BloodyHell.Entities
         {
             if (!Alive)
                 return;
-
-            var random = new Random();
-            var delta = 0.5f;
-
-            var locationTillEnd = new Vector(Location.X + delta, Location.Y + delta);
-            var locationTillStart = new Vector(Location.X - delta, Location.Y - delta);
-            //какая то залупа получилась если честно
-            float randVelocityX = 0 < Velocity.X ? random.Next(0, (int)Velocity.X) : random.Next((int)Velocity.X, 0);
-            float randVelocityY = 0 < Velocity.Y ? random.Next(0, (int)Velocity.Y) : random.Next((int)Velocity.Y, 0);
-
-            if (randVelocityY == 0)
-                randVelocityY += random.Next(-3, 2) + 0.5f;
-            else if (randVelocityX == 0)
-                randVelocityX += random.Next(-3, 2) + 0.5f;
-
-            IsTarget = !(locationTillEnd.X >= end.X || locationTillStart.X <= start.X 
-                || locationTillEnd.Y >= end.Y || locationTillStart.Y <= start.Y);
-
-            if (!IsTarget && (locationTillEnd.X >= end.X || locationTillStart.X <= start.X))
-                Velocity = new Vector(-Velocity.X, randVelocityY);
-
-            if (!IsTarget && (locationTillEnd.Y >= end.Y || locationTillStart.Y <= start.Y))
-                Velocity = new Vector(randVelocityX, -Velocity.Y);
-
-            Location += Velocity * (timeElapsed / 1000.0f);
-
+            PlayerInBounds = player.Location >= start && player.Location <= end;
             GoToPlayer(player, timeElapsed);
+            var futureLocation = Location + Velocity * (timeElapsed / 1000.0f);
+            if ((futureLocation.X >= end.X - Size || futureLocation.X <= start.X + Size))
+                Velocity = new Vector(-Velocity.X, Velocity.Y);
+            if ((futureLocation.Y >= end.Y - Size || futureLocation.Y <= start.Y + Size))
+                Velocity = new Vector(Velocity.X, -Velocity.Y);
+            Location += Velocity * (timeElapsed / 1000.0f);
         }
     }
 }
