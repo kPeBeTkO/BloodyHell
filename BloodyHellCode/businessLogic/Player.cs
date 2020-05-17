@@ -21,7 +21,7 @@ namespace BloodyHell.Entities
     {
         public const float HitRange = 2;
         public const float DashCouldown = 5000;
-        public const float Size = 0.4f;
+        public const float Size = 0.5f;
         public const float DefaultSpeed = 4;
         public const long HitCooldown = 200;
         public const long HitDuration = 150;
@@ -127,12 +127,46 @@ namespace BloodyHell.Entities
             Velocity = Direction * CurentSpeed * DashSpeedMultiplayer;
         }
 
+        private void PopFromWall(Square wall)
+        {
+            var minDist = 1.0;
+            var angle = 0.0;
+            if (Location.X - wall.Location.X < minDist && wall.Location.X != 0)
+            {
+                minDist = Location.X - wall.Location.X;
+                angle = Math.PI;
+            }
+            if (Location.Y - wall.Location.Y < minDist && wall.Location.Y != 0)
+            {
+                minDist = Location.Y - wall.Location.Y;
+                angle = Math.PI / 2;
+            }
+            if (wall.Location.X + 1 - Location.X < minDist)
+            {
+                minDist = wall.Location.X + 1 - Location.X;
+                angle = 0;
+            }
+            if (wall.Location.Y + 1 - Location.Y < minDist)
+            {
+                minDist = wall.Location.Y + 1 - Location.Y;
+                angle = -Math.PI / 2;
+            }
+            Location += new Vector(1, 0).Rotate(angle);
+        }
+
         private void Move(long timeElapsed, List<Square> walls)
         {
             if (walls == null || walls.Count == 0)
             {
                 Location += Velocity * (timeElapsed / 1000.0f);
                 return;
+            }
+            foreach(var wall in walls)
+            {
+                if ((int)Location.X == wall.Location.X && (int)Location.Y == wall.Location.Y)
+                {
+                    PopFromWall(wall);
+                }
             }
             var firstWallOnWay = new Ray(Location, Velocity.Angle).FirstIntersectionOfRay(walls);
             var delta = Velocity * (timeElapsed / 1000.0f);

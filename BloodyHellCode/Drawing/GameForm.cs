@@ -8,6 +8,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using BloodyHell.Entities;
 using System.Media;
+using System.Windows.Media;
+using Color = System.Drawing.Color;
+using Brushes = System.Drawing.Brushes;
+using Pen = System.Drawing.Pen;
 
 namespace BloodyHell
 {
@@ -21,6 +25,7 @@ namespace BloodyHell
         private Bitmap Menu;
         private Bitmap Pause;
         private Button start;
+        private SoundPlayer AttackSound;
         private Vector userInput
         {
             get
@@ -38,6 +43,7 @@ namespace BloodyHell
             [Keys.A] = new Vector(1, 0),
             [Keys.D] = new Vector(-1, 0),
         };
+
         public GameForm(List<string> levelNames)
         {
             start = new Button()
@@ -59,6 +65,7 @@ namespace BloodyHell
             Text = "Samurai Jurney";
             Pause = new Bitmap("Textures/Pause.jpg");
             Menu = new Bitmap("Textures/Menu.jpg");
+            AttackSound = new SoundPlayer("Media/PlayerStrike.wav");
             DoubleBuffered = true;
             Width = 1280;
             Height = 720;
@@ -77,7 +84,7 @@ namespace BloodyHell
                 }
                 Invalidate();
             };
-            SoundPlayer simpleSound = new SoundPlayer("Media/music.wav");
+            var simpleSound = new SoundPlayer("Media/music.wav");
             simpleSound.PlayLooping();
             SetUserControls();
             Paint += (sender, args) =>
@@ -182,7 +189,7 @@ namespace BloodyHell
             var experience = new Label()
             {
                 Location = new Point(50, 250),
-                Text = "experience: " + game.CurentLevel.Player.Stats[Parameters.Experience].ToString(),
+                Text = "exp: " + game.CurentLevel.Player.Stats[Parameters.Experience].ToString(),
                 BackColor = Color.White,
                 Width = 75,
                 TextAlign = ContentAlignment.MiddleCenter
@@ -235,7 +242,7 @@ namespace BloodyHell
             var height = Height / (float)Width * 20;
             graphics.TranslateTransform(-(camera.X - 10) * (float)Width / 20, -(camera.Y - height / 2) * (float)Height / height);
             graphics.ScaleTransform((float)Width / (20 * size), (float)Height / (height * size));
-            DrawRayCast(graphics, game.CurentLevel, 500, 7);
+            DrawRayCast(graphics, game.CurentLevel, game.CurentLevel.Map.Walls.Count > 300 ? 250 : 500, game.CurentLevel.Map.Walls.Count > 300 ? 5 : 7);
             DrawMonster(graphics, game.CurentLevel.Enemies, size, 7);
             DrawPlayer(graphics, game.CurentLevel.Player, size);
             DrawGUI(graphics, game.CurentLevel.Player);
@@ -245,9 +252,9 @@ namespace BloodyHell
         {
             if (player.Alive)
             {
-                graphics.DrawString(player.DashCount.ToString(), new Font("impact", 25), Brushes.White, 40, 0);
-                graphics.DrawEllipse(Pens.White, 0, 0, 40, 40);
-                graphics.FillPie(Brushes.White, 0, 0, 40, 40, -90, 360 * (player.Time - player.LastDashReload) / (float)Player.DashCouldown);
+                graphics.DrawString(player.DashCount.ToString(), new Font("impact", 25 * Width / 20 / 40), Brushes.White, Width / 20, 0);
+                graphics.DrawEllipse(Pens.White, 0, 0, Width / 20, Width / 20);
+                graphics.FillPie(Brushes.White, 0, 0, Width / 20, Width / 20, -90, 360 * (player.Time - player.LastDashReload) / (float)Player.DashCouldown);
             }
             else
             {
@@ -285,12 +292,12 @@ namespace BloodyHell
 
         private void DrawPlayer(Graphics graphics, Player player, int size)
         {
-            //нужно будет сделать свитч по состояниям игрока, а потом и по спрайту
             var playerImage = Textures.Player.Walk[2];
             var camera = player.Location;
             if (player.Attacing)
             {
-                graphics.FillPie(Brushes.Red, (camera.X - 2) * size, (camera.Y - 2) * size, size * 4, size * 4, (float)(player.Direction.Angle * 180 / Math.PI - 45), 90);
+                graphics.FillPie(new SolidBrush(Color.FromArgb(100,255,255,255)) , (camera.X - 2) * size, (camera.Y - 2) * size, size * 4, size * 4, (float)(player.Direction.Angle * 180 / Math.PI - 45), 90);
+                graphics.DrawArc(new Pen(Color.Black, 2), (camera.X - 2) * size, (camera.Y - 2) * size, size * 4, size * 4, (float)(player.Direction.Angle * 180 / Math.PI - 45), 90);
                 playerImage = Textures.Player.Attack[0];
             }
             else if (player.InDash)
@@ -312,7 +319,6 @@ namespace BloodyHell
             
 
             var height = Height / (float)Width * 20;
-            //как же тяжко вращать картинку :(
             graphics.ResetTransform();
             graphics.TranslateTransform(Width / 2, Height / 2);
             graphics.RotateTransform((float)(player.Direction.Angle * 180 / Math.PI + 90 ));

@@ -39,6 +39,14 @@ namespace BloodyHellTests
             player.MakeTurn(1000, new List<Square>() {  new Square(new Vector(1, 0), 1)});
             Assert.IsTrue(player.Location.X < 1);
         }
+
+        [Test]
+        public void PlayerPopsFromWall()
+        {
+            var player = new Player(new Vector(0.5f, 0.5f));
+            player.MakeTurn(1000, new List<Square>() { new Square(new Vector(0, 0), 1) });
+            Assert.IsTrue((int)Math.Floor(player.Location.X) != 0 || (int)Math.Floor(player.Location.Y) != 0);
+        }
         [Test]
         public void PlayerDoesnMoveThrowCornerOfWall()
         {
