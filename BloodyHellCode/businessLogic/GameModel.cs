@@ -69,9 +69,11 @@ namespace BloodyHell
             {
                 if (curentLevelID < Levels.Count - 1)
                 {
+                    var deaths = CurentLevel.Deaths;
                     var playerStats = CurentLevel.Player.Stats;
                     curentLevelID++;
                     CurentLevel.Player.Stats = playerStats;
+                    CurentLevel.Deaths = deaths;
                     foreach (var parametr in playerStats.Keys)
                     {
                         CurentLevel.InitialStats[parametr] = playerStats[parametr];
@@ -82,7 +84,10 @@ namespace BloodyHell
                 {
                     curentState = GameState.Menu;
                     foreach (var level in Levels)
+                    {
                         level.LoadFromFile();
+                        level.Deaths = 0;
+                    }
                 }
                 lastFrame = 0;
             }

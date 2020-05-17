@@ -11,6 +11,7 @@ namespace BloodyHell
 {
     class Level
     {
+        public int Deaths = 0;
         public readonly string LevelName;
         public Map Map { get; private set; }
         public Player Player { get; private set; }
@@ -74,9 +75,10 @@ namespace BloodyHell
             foreach(var enemy in Enemies.Where(x => x.Alive))
             {
                 var distance = enemy.Location - Player.Location;
-                if (distance.Length <= enemy.HitRange && !Player.InDash)
+                if (distance.Length <= enemy.HitRange && !Player.InDash && Player.Alive)
                 {
                     Player.Alive = false;
+                    Deaths++;
                 }
                 if (enemy.Attackable && distance.Length <= Player.HitRange && 
                     ((Player.Attacing && Player.Direction.AngleBetwen(distance) < Math.PI / 4) || (Player.InDash && distance.Length < Player.DashHitRange)))

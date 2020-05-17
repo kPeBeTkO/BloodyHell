@@ -243,13 +243,15 @@ namespace BloodyHell
             graphics.TranslateTransform(-(camera.X - 10) * (float)Width / 20, -(camera.Y - height / 2) * (float)Height / height);
             graphics.ScaleTransform((float)Width / (20 * size), (float)Height / (height * size));
             DrawRayCast(graphics, game.CurentLevel, game.CurentLevel.Map.Walls.Count > 300 ? 250 : 500, game.CurentLevel.Map.Walls.Count > 300 ? 5 : 7);
-            DrawMonster(graphics, game.CurentLevel.Enemies, size, 7);
+            DrawMonster(graphics, game.CurentLevel.Enemies, size, game.CurentLevel.Map.Walls.Count > 300 ? 5 : 7);
             DrawPlayer(graphics, game.CurentLevel.Player, size);
             DrawGUI(graphics, game.CurentLevel.Player);
         }
 
         private void DrawGUI(Graphics graphics, Player player)
         {
+            var deathCount = "Deaths: " + game.CurentLevel.Deaths.ToString();
+            graphics.DrawString(deathCount, new Font("impact", 25 * Width / 20 / 40), Brushes.Red, Width - deathCount.Length * 20 * Width / 20 / 40, 0);
             if (player.Alive)
             {
                 graphics.DrawString(player.DashCount.ToString(), new Font("impact", 25 * Width / 20 / 40), Brushes.White, Width / 20, 0);
@@ -316,8 +318,6 @@ namespace BloodyHell
             {
                 playerImage = Textures.Player.Dead[0];
             }
-            
-
             var height = Height / (float)Width * 20;
             graphics.ResetTransform();
             graphics.TranslateTransform(Width / 2, Height / 2);
